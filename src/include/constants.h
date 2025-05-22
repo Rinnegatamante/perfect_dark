@@ -13,7 +13,15 @@
 #define false 0
 #define true  1
 
+#ifdef __vita__
+#define DISABLE_ARTIFACTS
+#endif
+
+#ifdef DISABLE_ARTIFACTS
+#define MAX_ARTIFACTS          0
+#else
 #define MAX_ARTIFACTS          120
+#endif
 #define MAX_BOTS               8
 #define MAX_CHRSPERSQUADRON    16
 #define MAX_CHRSPERTEAM        32
