@@ -1523,6 +1523,11 @@ int gladLoadGLLoader(GLADloadproc load) {
 	load_GL_VERSION_3_3(load);
 	load_GL_VERSION_4_0(load);
 	load_GL_VERSION_4_1(load);
+	
+#ifdef __vita__
+	glad_glGetProgramBinary = (PFNGLGETPROGRAMBINARYPROC)load("glGetProgramBinary");
+	glad_glProgramBinary = (PFNGLPROGRAMBINARYPROC)load("glProgramBinary");
+#endif
 
 	if (!find_extensionsGL()) return 0;
 	load_GL_ARB_framebuffer_object(load);

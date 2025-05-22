@@ -26,6 +26,7 @@
 extern "C" {
   SceGxmTexture *vglGetGxmTexture(GLenum target);
 };
+#define SHADER_MAGIC (1)
 #endif
 
 using namespace std;
@@ -263,6 +264,33 @@ static struct ShaderProgram* gfx_opengl_create_and_load_new_shader(uint64_t shad
     size_t vs_len = 0;
     size_t fs_len = 0;
     size_t num_floats = 4;
+    GLuint shader_program;
+    GLuint fragment_shader;
+    GLuint vertex_shader;
+    GLint lengths[2];
+    const GLchar *sources[2];
+
+#ifdef __vita__
+    int prog_size, prog_len = 0;
+    unsigned int prog_format = 0;
+    void *prog_bin = NULL;
+    char fname[256];
+    sprintf(fname, "ux0:data/pd/shader_cache/%08X_%016llX_%d.bin", shader_id1, shader_id0, SHADER_MAGIC);
+    FILE *f = fopen(fname, "rb");
+    if (f) {
+        shader_program = glCreateProgram();
+        fseek(f, 0, SEEK_END);
+        int prog_size = ftell(f);
+        fseek(f, 0, SEEK_SET);
+        prog_bin = malloc(prog_size - 4);
+        fread(&num_floats, 1, sizeof(size_t), f);
+        fread(prog_bin, 1, prog_size, f);
+        fclose(f);
+        glProgramBinary(shader_program, 0, prog_bin, prog_size);
+        free(prog_bin);
+        goto program_ready;
+    }
+#endif
 
     // Vertex shader
 
@@ -571,11 +599,13 @@ static struct ShaderProgram* gfx_opengl_create_and_load_new_shader(uint64_t shad
     vs_buf[vs_len] = '\0';
     fs_buf[fs_len] = '\0';
 
-    const GLchar* sources[2] = { vs_buf, fs_buf };
-    const GLint lengths[2] = { (GLint)vs_len, (GLint)fs_len };
+    sources[0] = vs_buf;
+    sources[1] = fs_buf;
+    lengths[0] = (GLint)vs_len;
+    lengths[1] = (GLint)fs_len;
     GLint success;
 
-    GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    vertex_shader = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex_shader, 1, &sources[0], &lengths[0]);
     glCompileShader(vertex_shader);
     glGetShaderiv(vertex_shader, GL_COMPILE_STATUS, &success);
@@ -588,7 +618,7 @@ static struct ShaderProgram* gfx_opengl_create_and_load_new_shader(uint64_t shad
         sysFatalError("Vertex shader compilation failed:\n%s", error_log);
     }
 
-    GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment_shader, 1, &sources[1], &lengths[1]);
     glCompileShader(fragment_shader);
     glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
@@ -601,10 +631,22 @@ static struct ShaderProgram* gfx_opengl_create_and_load_new_shader(uint64_t shad
         sysFatalError("Fragment shader compilation failed:\n%s", error_log);
     }
 
-    GLuint shader_program = glCreateProgram();
+    shader_program = glCreateProgram();
     glAttachShader(shader_program, vertex_shader);
     glAttachShader(shader_program, fragment_shader);
     glLinkProgram(shader_program);
+
+#ifdef __vita__
+    // Caching precompiled shader on filesystem
+    f = fopen(fname, "wb");
+    glGetProgramiv(shader_program, GL_PROGRAM_BINARY_LENGTH, &prog_size);
+    prog_bin = malloc(prog_size);
+    glGetProgramBinary(shader_program, prog_size, &prog_len, &prog_format, prog_bin);
+    fwrite(&num_floats, 1, sizeof(size_t), f);
+    fwrite(prog_bin, 1, prog_len, f);
+    fclose(f);
+    free(prog_bin);
+#endif
 
 #ifndef __vita__
     glDetachShader(shader_program, vertex_shader);
@@ -612,6 +654,10 @@ static struct ShaderProgram* gfx_opengl_create_and_load_new_shader(uint64_t shad
 #endif
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
+
+#ifdef __vita__
+program_ready:
+#endif
 
     size_t cnt = 0;
 
@@ -1008,8 +1054,8 @@ static void gfx_opengl_init(void) {
     }
 
 #ifdef __vita__
-	GLVersion.major = 2;
-	GLVersion.minor = 1;
+    GLVersion.major = 2;
+    GLVersion.minor = 1;
 #endif
 
     if (GLVersion.major < 2 || (GLVersion.major == 2 && GLVersion.minor < 1)) {
@@ -1056,7 +1102,7 @@ static void gfx_opengl_init(void) {
         snprintf(gl_glsl_version_str, sizeof(gl_glsl_version_str), "%d core", gl_glsl_version);
     }
 #ifdef __vita__
-	gl_glsl_version = 120;
+    gl_glsl_version = 120;
 #endif
     sysLogPrintf(LOG_NOTE, "GL: using GLSL version %s", gl_glsl_version_str);
 
@@ -1304,7 +1350,7 @@ void gfx_opengl_copy_framebuffer(int fb_dst, int fb_src, int left, int top, bool
 void gfx_opengl_set_texture_filter(FilteringMode mode) {
 #ifdef __vita__
     if (mode == FILTER_THREE_POINT)
-		mode = FILTER_LINEAR;
+        mode = FILTER_LINEAR;
 #endif
     current_filter_mode = mode;
 }
