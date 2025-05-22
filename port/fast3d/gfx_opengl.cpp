@@ -24,6 +24,7 @@
 #include <psp2/gxm.h>
 extern "C" {
     SceGxmTexture *vglGetGxmTexture(GLenum target);
+    void vglBufferData(GLenum target, const GLvoid *data);
 };
 #define SHADER_MAGIC (1)
 #endif
@@ -891,8 +892,11 @@ static void gfx_opengl_draw_triangles(float buf_vbo[], size_t buf_vbo_len, size_
     if (cur_gl_program->used_textures[1]) {
         glUniform2fv(cur_gl_program->uTexSize[1], 1, tex1_size);
     }
-#endif
+    vglBufferData(GL_ARRAY_BUFFER, buf_vbo);
+#else
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * buf_vbo_len, buf_vbo, GL_STREAM_DRAW);
+#endif
+
     glDrawArrays(GL_TRIANGLES, 0, 3 * buf_vbo_num_tris);
 }
 

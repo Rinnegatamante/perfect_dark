@@ -6,6 +6,8 @@
 #ifdef __vita__
 #include <vitasdk.h>
 #include <vitaGL.h>
+extern float *buf_vbo_ptr;
+extern float *buf_vbo;
 #endif
 
 #include "platform.h"
@@ -102,7 +104,9 @@ static void gfx_sdl_init(const struct GfxWindowInitSettings *set) {
 	sceIoMkdir("ux0:data/pd/shader_cache", 0777);
 	vglSetSemanticBindingMode(VGL_MODE_POSTPONED);
 	vglUseLowPrecision(GL_TRUE);
-	vglInitExtended(0, 960, 544, 32 * 1024 * 1024, SCE_GXM_MULTISAMPLE_4X);
+	vglInitExtended(0, 960, 544, 8 * 1024 * 1024, SCE_GXM_MULTISAMPLE_4X);
+	buf_vbo_ptr = (float *)vglAlloc(32 * 1024 * 1024, VGL_MEM_RAM);
+	buf_vbo = buf_vbo_ptr;
 #endif
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -370,6 +374,9 @@ static void gfx_sdl_swap_buffers_begin(void) {
         sync_framerate_with_timer();
     }
     SDL_GL_SwapWindow(wnd);
+#ifdef __vita__
+	buf_vbo = buf_vbo_ptr;
+#endif
 }
 
 static void gfx_sdl_swap_buffers_end(void) {

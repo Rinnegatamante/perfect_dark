@@ -225,7 +225,12 @@ uint32_t gfx_msaa_level = 1;
 
 static bool dropped_frame;
 
+#ifdef __vita__
+float *buf_vbo_ptr;
+float *buf_vbo;
+#else
 static float buf_vbo[MAX_BUFFERED * (32 * 3)]; // 3 vertices in a triangle and 32 floats per vtx
+#endif
 static size_t buf_vbo_len;
 static size_t buf_vbo_num_tris;
 
@@ -251,6 +256,9 @@ static constexpr float clampf(const float x, const float min, const float max) {
 static void gfx_flush(void) {
     if (buf_vbo_len > 0) {
         gfx_rapi->draw_triangles(buf_vbo, buf_vbo_len, buf_vbo_num_tris);
+#ifdef __vita__
+        buf_vbo += buf_vbo_len;
+#endif
         buf_vbo_len = 0;
         buf_vbo_num_tris = 0;
     }
