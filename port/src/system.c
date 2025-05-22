@@ -14,6 +14,10 @@
 #include "platform.h"
 #include "system.h"
 
+#ifdef __vita__
+#include <vitasdk.h>
+#endif
+
 #ifdef PLATFORM_WIN32
 
 #include <windows.h>
@@ -157,9 +161,13 @@ s32 sysArgGetInt(const char *arg, s32 defval)
 
 u64 sysGetMicroseconds(void)
 {
+#ifdef __vita__
+	return sceKernelGetProcessTimeLow();
+#else
 	struct timeval tv;
 	gettimeofday(&tv, NULL);
 	return ((u64)tv.tv_sec * USEC_IN_SEC + (u64)tv.tv_usec) - startTick;
+#endif
 }
 
 s32 sysLogIsOpen(void)
