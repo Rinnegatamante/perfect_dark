@@ -31,7 +31,7 @@
 
 //#define STATIC_FRAMESKIP
 #define AUTO_FRAMESKIP
-#define AUTO_FRAMESKIP_TARGET (33332)
+#define AUTO_FRAMESKIP_TARGET (16667)
 
 static struct GfxWindowManagerAPI *wmAPI;
 static struct GfxRenderingAPI *renderingAPI;
