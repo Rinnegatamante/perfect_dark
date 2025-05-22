@@ -4,6 +4,7 @@
 #include <time.h>
 
 #ifdef __vita__
+#include <vitasdk.h>
 #include <vitaGL.h>
 #endif
 
@@ -98,7 +99,9 @@ static void gfx_sdl_init(const struct GfxWindowInitSettings *set) {
 #endif
 
 #ifdef __vita__
+	sceIoMkdir("ux0:data/pd/shader_cache", 0777);
 	vglSetSemanticBindingMode(VGL_MODE_POSTPONED);
+	vglUseLowPrecision(GL_TRUE);
 	vglInitExtended(0, 960, 544, 32 * 1024 * 1024, SCE_GXM_MULTISAMPLE_4X);
 #endif
 
