@@ -282,7 +282,7 @@ static struct ShaderProgram* gfx_opengl_create_and_load_new_shader(uint64_t shad
         fseek(f, 0, SEEK_END);
         int prog_size = ftell(f);
         fseek(f, 0, SEEK_SET);
-        prog_bin = malloc(prog_size - 4);
+        prog_bin = malloc(prog_size - sizeof(size_t));
         fread(&num_floats, 1, sizeof(size_t), f);
         fread(prog_bin, 1, prog_size, f);
         fclose(f);
