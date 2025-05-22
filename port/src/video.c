@@ -25,6 +25,14 @@
 #define DEFAULT_VID_FULLSCREEN_EXCLUSIVE false
 #endif
 
+#ifdef __vita__
+#include <vitasdk.h>
+#endif
+
+//#define STATIC_FRAMESKIP
+#define AUTO_FRAMESKIP
+#define AUTO_FRAMESKIP_TARGET (33332)
+
 static struct GfxWindowManagerAPI *wmAPI;
 static struct GfxRenderingAPI *renderingAPI;
 
@@ -119,8 +127,30 @@ void videoStartFrame(void)
 
 void videoSubmitCommands(Gfx *cmds)
 {
+#ifdef STATIC_FRAMESKIP
+	static int skip_frame = 0;
+#elif defined(AUTO_FRAMESKIP)
+	static uint32_t last_frame_tick = 0;
+	static uint32_t cur_delta = 0;
+	static uint32_t expected_delta = 0;
+#endif
 	if (initDone) {
+#ifdef STATIC_FRAMESKIP
+		if (!skip_frame)
+			gfx_run(cmds);
+		skip_frame = !skip_frame;
+#elif defined(AUTO_FRAMESKIP)
+		uint32_t cur_frame_tick = sceKernelGetProcessTimeLow();
+		uint32_t frame_delta = last_frame_tick ? (cur_frame_tick - last_frame_tick) : AUTO_FRAMESKIP_TARGET;
+		if (cur_delta + frame_delta <= expected_delta) {
+			gfx_run(cmds);
+			cur_delta += frame_delta;
+		}
+		last_frame_tick = cur_frame_tick;
+		expected_delta += AUTO_FRAMESKIP_TARGET;
+#else
 		gfx_run(cmds);
+#endif
 		++dlcount;
 	}
 }

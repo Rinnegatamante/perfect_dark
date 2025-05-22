@@ -22,9 +22,8 @@
 
 #ifdef __vita__
 #include <psp2/gxm.h>
-#define HAVE_GL_HEADERS
 extern "C" {
-  SceGxmTexture *vglGetGxmTexture(GLenum target);
+    SceGxmTexture *vglGetGxmTexture(GLenum target);
 };
 #define SHADER_MAGIC (1)
 #endif
