@@ -27,8 +27,8 @@
 
 #ifdef __vita__
 #include <vitasdk.h>
-#define STATIC_FRAMESKIP
-//#define AUTO_FRAMESKIP
+//#define STATIC_FRAMESKIP
+#define AUTO_FRAMESKIP
 #endif
 
 #define AUTO_FRAMESKIP_TARGET (16667)
@@ -142,12 +142,12 @@ void videoSubmitCommands(Gfx *cmds)
 #elif defined(AUTO_FRAMESKIP)
 		uint32_t cur_frame_tick = sceKernelGetProcessTimeLow();
 		uint32_t frame_delta = last_frame_tick ? (cur_frame_tick - last_frame_tick) : AUTO_FRAMESKIP_TARGET;
-		if (cur_delta + frame_delta <= expected_delta) {
+		expected_delta += AUTO_FRAMESKIP_TARGET;
+		cur_delta += frame_delta;
+		if (cur_delta <= expected_delta) {
 			gfx_run(cmds);
-			cur_delta += frame_delta;
 		}
 		last_frame_tick = cur_frame_tick;
-		expected_delta += AUTO_FRAMESKIP_TARGET;
 #else
 		gfx_run(cmds);
 #endif
