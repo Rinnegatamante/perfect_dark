@@ -50,8 +50,13 @@ __attribute__((dllexport)) u32 AmdPowerXpressRequestHighPerformance = 1;
 
 #endif
 
+#ifdef __vita__
+#define LOG_FNAME "ux0:data/pd/pd.log"
+#define CRASHLOG_FNAME "ux0:data/pd/pd.crash.log"
+#else
 #define LOG_FNAME "pd.log"
 #define CRASHLOG_FNAME "pd.crash.log"
+#endif
 #define USEC_IN_SEC 1000000ULL
 
 static u64 startTick = 0;

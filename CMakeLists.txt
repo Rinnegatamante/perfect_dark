@@ -11,7 +11,24 @@ if(APPLE)
   endif()
 endif()
 
+if(VITA)
+  if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+    if(DEFINED ENV{VITASDK})
+      set(CMAKE_TOOLCHAIN_FILE "$ENV{VITASDK}/share/vita.toolchain.cmake" CACHE PATH "toolchain file")
+    else()
+      message(FATAL_ERROR "Please define VITASDK to point to your SDK path!")
+    endif()
+  endif()
+endif()
+
 project(pd C CXX)
+
+if(VITA)
+  include("${VITASDK}/share/vita.cmake" REQUIRED)
+  set(VITA_APP_NAME "Project Dark")
+  set(VITA_TITLEID  "PRJCTDARK")
+  set(VITA_VERSION  "01.00")
+endif()
 
 include(TargetArch)
 include(FindPkgConfig)
@@ -69,6 +86,9 @@ elseif(NINTENDO_SWITCH)
 elseif(UNIX)
   # Generic *nix; assume Linux
   set(TARGET_OS "linux")
+elseif(VITA)
+  # PlayStation Vita
+  set(TARGET_OS "vita")
 else()
   # ???
   message(FATAL_ERROR "Unknown target OS or compiler")
@@ -209,12 +229,17 @@ endif()
 set(LIBS )
 
 # SDL2
-find_package(SDL2 REQUIRED)
-if(NINTENDO_SWITCH)
-  if(NOT SDL2_LIBRARY OR NOT SDL2_INCLUDE_DIR)
-    # sometimes FindSDL2 just wants us to suffer and does not set these
-    set(SDL2_LIBRARY "SDL2")
-    set(SDL2_INCLUDE_DIR "${DEVKITPRO}/portlibs/switch/include/SDL2")
+if(VITA)
+  set(SDL2_LIBRARY "SDL2")
+  set(SDL2_INCLUDE_DIR "${VITASDK}/arm-vita-eabi/include/SDL2")
+else()
+  find_package(SDL2 REQUIRED)
+  if(NINTENDO_SWITCH)
+    if(NOT SDL2_LIBRARY OR NOT SDL2_INCLUDE_DIR)
+      # sometimes FindSDL2 just wants us to suffer and does not set these
+      set(SDL2_LIBRARY "SDL2")
+      set(SDL2_INCLUDE_DIR "${DEVKITPRO}/portlibs/switch/include/SDL2")
+    endif()
   endif()
 endif()
 include_directories(SYSTEM "${SDL2_INCLUDE_DIR}")
@@ -235,6 +260,8 @@ if(NOT GL_LIBRARY)
     set(GL_LIBRARY EGL glapi drm_nouveau)
   elseif(APPLE)
     set(GL_LIBRARY "-framework OpenGL")
+  elseif(VITA)
+    set(GL_LIBRARY vitaGL vitashark SceShaccCgExt SceShaccCg_stub taihen_stub mathneon SceGxm_stub SceDisplay_stub SceAppMgr_stub)
   else()
     set(GL_LIBRARY GL)
   endif()
@@ -247,6 +274,8 @@ if(NOT EXTRA_LIBRARIES)
     set(EXTRA_LIBRARIES dbghelp -static-libstdc++)
   elseif(NINTENDO_SWITCH)
     set(EXTRA_LIBRARIES stdc++ pthread)
+  elseif(VITA)
+    set(EXTRA_LIBRARIES openal stdc++ pthread SceMotion_stub SceCtrl_stub SceTouch_stub SceHid_stub SceIme_stub SceCommonDialog_stub SceLibKernel_stub SceKernelDmacMgr_stub SceAudioIn_stub SceAudio_stub SceSysmodule_stub ScePower_stub)
   else()
     set(EXTRA_LIBRARIES stdc++ m dl)
   endif()
@@ -354,5 +383,14 @@ if(NINTENDO_SWITCH)
     COMMAND nacptool --create "Perfect Dark" "fgsfds and contributors" "${VERSION_ROMID}/${VERSION_BRANCH}/${VERSION_HASH}" "${BIN_NAME}.nacp"
     COMMAND aarch64-none-elf-strip -o ${CMAKE_BINARY_DIR}/${BIN_NAME}.stripped.elf ${CMAKE_BINARY_DIR}/${BIN_NAME}.elf
     COMMAND elf2nro ${CMAKE_BINARY_DIR}/${BIN_NAME}.stripped.elf ${CMAKE_BINARY_DIR}/${BIN_NAME}.nro --icon=${CMAKE_SOURCE_DIR}/dist/nswitch/icon.jpg --nacp=${BIN_NAME}.nacp
+  )
+endif()
+
+if(VITA)
+  vita_create_self(${BIN_NAME}.self ${BIN_NAME} UNSAFE)
+  set(VITA_MKSFOEX_FLAGS "-d ATTRIBUTE2=12")
+  vita_create_vpk(${BIN_NAME}.vpk ${VITA_TITLEID} ${BIN_NAME}.self
+    VERSION ${VITA_VERSION}
+    NAME ${VITA_APP_NAME}
   )
 endif()

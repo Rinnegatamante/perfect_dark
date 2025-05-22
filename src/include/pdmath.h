@@ -1,8 +1,8 @@
-#ifndef IN_MATH_H
-#define IN_MATH_H
+#ifndef IN_PDMATH_H
+#define IN_PDMATH_H
 
 #ifndef PLATFORM_N64
-#include_next <math.h>
+#include <math.h>
 #undef M_PI
 #undef M_TAU
 // HACK: for some reason the #include_next above doesn't really do anything, so

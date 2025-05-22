@@ -3,6 +3,10 @@
 #include <unistd.h>
 #include <time.h>
 
+#ifdef __vita__
+#include <vitaGL.h>
+#endif
+
 #include "platform.h"
 #include "system.h"
 
@@ -91,6 +95,11 @@ static void gfx_sdl_init(const struct GfxWindowInitSettings *set) {
         SDL_SetHint(SDL_HINT_WINDOWS_DPI_AWARENESS, "permonitor");
 #endif
     }
+#endif
+
+#ifdef __vita__
+	vglSetSemanticBindingMode(VGL_MODE_POSTPONED);
+	vglInitExtended(0, 960, 544, 32 * 1024 * 1024, SCE_GXM_MULTISAMPLE_4X);
 #endif
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {

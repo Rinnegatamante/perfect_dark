@@ -18,6 +18,11 @@
 #include "system.h"
 #include "utils.h"
 
+#ifdef __vita__
+#include <vitasdk.h>
+int _newlib_heap_size_user = 256 * 1024 * 1024;
+#endif
+
 u32 g_OsMemSize = 0;
 s32 g_OsMemSizeMb = 16;
 u8 g_Is4Mb = 0;
@@ -95,7 +100,26 @@ static void cleanup(void)
 
 int main(int argc, const char **argv)
 {
+#ifdef __vita__
+	scePowerSetArmClockFrequency(444);
+	scePowerSetBusClockFrequency(222);
+	scePowerSetGpuClockFrequency(222);
+	scePowerSetGpuXbarClockFrequency(166);
+	char *vita_args[9] = {
+		"ux0:data/pd",
+		"--basedir",
+		"ux0:data/pd",
+		"--moddir",
+		"ux0:data/pd",
+		"--savedir",
+		"",
+		"--log",
+		0
+	};
+	sysInitArgs(8, vita_args);
+#else	
 	sysInitArgs(argc, argv);
+#endif
 
 	if (!sysArgCheck("--no-crash-handler")) {
 		crashInit();

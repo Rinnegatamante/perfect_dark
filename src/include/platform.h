@@ -7,6 +7,9 @@
 #elif defined(__SWITCH__)
 	#define PLATFORM_POSIX 1
 	#define PLATFORM_NSWITCH 1
+#elif defined (__vita__)
+	#define PLATFORM_POSIX 1
+	#define PLATFORM_VITA 1
 #elif defined(__linux__)
 	#define PLATFORM_POSIX 1
 	#define PLATFORM_LINUX 1
