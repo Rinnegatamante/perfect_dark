@@ -191,6 +191,20 @@ Controls can be rebound in `pd.ini`. Default control scheme is as follows:
    * Execute command: `make -C build -j4`
 8. The resulting executable will be at `build/pd.arm64.nro`.
 
+### PlayStation Vita
+
+1. Set up the [vitasdk environment](https://vitasdk.org/).
+2. Compile [vitaGL](https://github.com/Rinnegatamante/vitaGL) with this configuration:
+   `make HAVE_GLSL_SUPPORT=1 CIRCULAR_VERTEX_POOL=2 USE_SCRATCH_MEMORY=1 NO_DEBUG=1 install`
+3. Get the source code:  
+   `git clone --recursive https://github.com/fgsfdsfgs/perfect_dark.git && cd perfect_dark`
+4. Configure:
+   * Execute command: `cmake -G "Unix Makefiles" -DVITA=1 -Bbuild .`
+   * Add ` -DROMID=pal-final` or ` -DROMID=jpn-final` at the end of the command if you want to build a PAL or JPN executable respectively.
+7. Build:
+   * Execute command: `make -C build -j4`
+8. The resulting executable will be at `build/pd.armv7.vpk`.
+
 ### Notes
 
 Alternate compilers or toolchains can be specified by passing `-DCMAKE_TOOLCHAIN_FILE=whatever` as normal. The port does not build with Visual Studio.
