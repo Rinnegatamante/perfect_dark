@@ -102,24 +102,31 @@ void audioEndFrame(void)
 		ALuint buffer;
 		if (processed > 0) {
 			alSourceUnqueueBuffers(ALSource, 1, &buffer);
-			ALint bufferSize;
-			alGetBufferi(buffer, AL_SIZE, &bufferSize);
-			ALQueuedSize -= bufferSize;
-			if (processed) {
-				ALuint to_discard[128];
-				alSourceUnqueueBuffers(ALSource, processed, to_discard);
-				alDeleteBuffers(processed, to_discard);
+			ALint ALBufferSize;
+			alGetBufferi(buffer, AL_SIZE, &ALBufferSize);
+			ALQueuedSize -= ALBufferSize;
+			processed--;
+			for (int i = 0; i < processed; i++) {
+				ALuint to_discard;
+				alSourceUnqueueBuffers(ALSource, 1, &to_discard);
+				alGetBufferi(to_discard, AL_SIZE, &ALBufferSize);
+				ALQueuedSize -= ALBufferSize;
+				alDeleteBuffers(1, &to_discard);
 			}
 		} else {
 			alGenBuffers(1, &buffer);
 		}
-		alBufferData(buffer, AL_FORMAT_STEREO16, nextBuf, nextSize, AUDIO_SAMPLERATE);
-		ALQueuedSize += nextSize;
-		alSourceQueueBuffers(ALSource, 1, &buffer);
-		ALint state;
-		alGetSourcei(ALSource, AL_SOURCE_STATE, &state);
-		if (state != AL_PLAYING) {
-			alSourcePlay(ALSource);
+		if (audioGetSamplesBuffered() < queueLimit) {
+			alBufferData(buffer, AL_FORMAT_STEREO16, nextBuf, nextSize, AUDIO_SAMPLERATE);
+			ALQueuedSize += nextSize;
+			alSourceQueueBuffers(ALSource, 1, &buffer);
+			ALint state;
+			alGetSourcei(ALSource, AL_SOURCE_STATE, &state);
+			if (state != AL_PLAYING) {
+				alSourcePlay(ALSource);
+			}
+		} else {
+			alDeleteBuffers(1, &buffer);
 		}
 #else
 		if (audioGetSamplesBuffered() < queueLimit) {
