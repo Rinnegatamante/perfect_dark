@@ -531,7 +531,7 @@ char *menuResolveParam2Text(struct menuitem *item)
 {
 #ifndef PLATFORM_N64
 	if (item->flags & MENUITEMFLAG_LITERAL_TEXT) {
-		return (const char *)item->param2;
+		return (char *)item->param2;
 	}
 #endif
 	return menuResolveText(item->param2, item);
@@ -541,7 +541,7 @@ char *menuResolveDialogTitle(struct menudialogdef *dialogdef)
 {
 #ifndef PLATFORM_N64
 	if (dialogdef->flags & MENUDIALOGFLAG_LITERAL_TEXT) {
-		return (const char *)dialogdef->title;
+		return (char *)dialogdef->title;
 	}
 #endif
 	return menuResolveText(dialogdef->title, dialogdef);
@@ -806,7 +806,7 @@ void menuCalculateItemSize(struct menuitem *item, s16 *width, s16 *height, struc
 			if ((item->flags & (MENUITEMFLAG_LABEL_HASRIGHTTEXT | MENUITEMFLAG_BIGFONT)) == 0) {
 #ifndef PLATFORM_N64
 				if (item->flags & MENUITEMFLAG_LITERAL_TEXT) {
-					text = (const char *)item->param3;
+					text = (char *)item->param3;
 				} else
 #endif
 				text = menuResolveText(item->param3, item);

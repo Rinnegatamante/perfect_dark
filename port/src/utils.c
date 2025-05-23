@@ -46,7 +46,7 @@ char *strRightTrim(char *str)
 	}
 
 	const s32 len = strlen(str);
-	for (s32 i = len - 1; i >= 0 && isspace(str[i]); --i) {
+	for (s32 i = len - 1; i >= 0 && isspace((unsigned char)str[i]); --i) {
 		str[i] = '\0';
 	}
 
@@ -66,7 +66,7 @@ char *strTrim(char *str)
 
 	// right trim
 	const s32 len = strlen(str);
-	for (s32 i = len - 1; i > 0 && isspace(str[i]); --i) {
+	for (s32 i = len - 1; i > 0 && isspace((unsigned char)str[i]); --i) {
 		str[i] = '\0';
 	}
 

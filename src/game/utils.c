@@ -416,11 +416,13 @@ bool func0f17781c(struct coord *arg0, s32 arg1)
 
 void func0f1779f0(u32 arg0, u32 arg1, u32 arg2, u32 arg3)
 {
+#if 0
 	u32 stack[2];
 
 	if (stack[0]) {
 		// empty
 	}
+#endif
 }
 
 void func0f177a10(u32 arg0)
@@ -430,11 +432,13 @@ void func0f177a10(u32 arg0)
 
 void func0f177a14(u32 arg0, u32 arg1, u32 arg2, u32 arg3)
 {
+#if 0
 	u32 stack[2];
 
 	if (stack[0]) {
 		// empty
 	}
+#endif
 }
 
 void func0f177a30(u32 arg0)
@@ -444,11 +448,13 @@ void func0f177a30(u32 arg0)
 
 void func0f177a38(u32 arg0, u32 arg1, u32 arg2, u32 arg3)
 {
+#if 0
 	u32 stack[2];
 
 	if (stack[0]) {
 		// empty
 	}
+#endif
 }
 
 s32 func0f177a54(u8 *arg0, s32 arg1, u8 *arg2, s32 arg3)

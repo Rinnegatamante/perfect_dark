@@ -3404,7 +3404,7 @@ void frGetGoalScoreText(char *buffer)
 		// "GOAL SCORE:"
 		sprintf(buffer, "%s %d\n", langGet(L_MISC_418), g_FrData.goalscore);
 	} else {
-		sprintf(buffer, "");
+		buffer[0] = 0;
 	}
 }
 #endif

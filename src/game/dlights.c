@@ -2072,13 +2072,13 @@ void func0f005bb0(void)
 	} else {
 		// Paused or not wearing night vision - stop both sounds
 		if (g_Vars.currentplayer->nvhum != NULL) {
-			if (sndGetState(g_Vars.currentplayer->nvhum) != NULL) {
+			if (sndGetState(g_Vars.currentplayer->nvhum) != 0) {
 				audioStop(g_Vars.currentplayer->nvhum);
 			}
 		}
 
 		if (g_Vars.currentplayer->nvoverload != NULL) {
-			if (sndGetState(g_Vars.currentplayer->nvoverload) != NULL) {
+			if (sndGetState(g_Vars.currentplayer->nvoverload) != 0) {
 				audioStop(g_Vars.currentplayer->nvoverload);
 			}
 		}

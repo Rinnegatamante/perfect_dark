@@ -557,7 +557,7 @@ bool memaRealloc(uintptr_t addr, u64 oldsize, u64 newsize)
 			return false;
 		}
 	} else if (oldsize > newsize) {
-		memaFree((void *)(addr + newsize), oldsize - newsize);
+		memaFree((void *)(uintptr_t)(addr + newsize), oldsize - newsize);
 	}
 
 	return true;

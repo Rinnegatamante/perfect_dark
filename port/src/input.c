@@ -1356,7 +1356,7 @@ s32 inputGetKeyByName(const char *name)
 	s32 start = 0;
 	s32 end = 0;
 
-	if (!strncmp(name, "JOY", 3) && isdigit(name[3])) {
+	if (!strncmp(name, "JOY", 3) && isdigit((unsigned char)name[3])) {
 		const s32 idx = name[3] - '1';
 		if (idx >= 0 && idx < INPUT_MAX_CONTROLLERS) {
 			start = VK_JOY1_BEGIN + idx * INPUT_MAX_CONTROLLER_BUTTONS;
@@ -1365,7 +1365,7 @@ s32 inputGetKeyByName(const char *name)
 	} else if (!strncmp(name, "MOUSE", 5)) {
 		start = VK_MOUSE_BEGIN;
 		end = VK_JOY1_BEGIN;
-	} else if (!strncmp(name, "UNKNOWN", 7) && isdigit(name[7])) {
+	} else if (!strncmp(name, "UNKNOWN", 7) && isdigit((unsigned char)name[7])) {
 		const s32 key = atoi(name + 7);
 		if (key >= 0 && key < VK_TOTAL_COUNT) {
 			return key;

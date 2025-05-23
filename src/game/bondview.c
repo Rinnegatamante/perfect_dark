@@ -2563,16 +2563,16 @@ Gfx *bviewDrawHorizonScanner(Gfx *gdl)
 	s32 x;
 	s32 y;
 
-	char directions[][3] = {
-		{'n', '\0', '\0'},
-		{'n', 'e',  '\0'},
-		{'e', '\0', '\0'},
-		{'s', 'e',  '\0'},
-		{'s', '\0', '\0'},
-		{'s', 'w',  '\0'},
-		{'w', '\0', '\0'},
-		{'n', 'w',  '\0'},
-		{'n', '\0', '\0'},
+	char *directions[] = {
+		"n",
+		"ne",
+		"e",
+		"se",
+		"s",
+		"sw",
+		"w",
+		"nw",
+		"n",
 	};
 
 	s32 turnangle = atan2f(-lookx, lookz) * 180.0f / M_PI;
@@ -2625,7 +2625,7 @@ Gfx *bviewDrawHorizonScanner(Gfx *gdl)
 	gdl = text0f153838(gdl);
 
 	// Prepare text buffers
-	sprintf(directiontext, "%s %s:%03d", arrows, &directions[(turnangle + 22) / 45], turnangle);
+	sprintf(directiontext, "%s %s:%03d", arrows, directions[(turnangle + 22) / 45], turnangle);
 	sprintf(hertztext, "%s %s%s%4.2fh", arrows, "", "", menuGetCosOscFrac(4) * 4.6f + 917.4f);
 
 	fovy = viGetFovY();

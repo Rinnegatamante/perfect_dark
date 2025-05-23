@@ -3225,7 +3225,7 @@ Gfx *bgRenderRoomPass(Gfx *gdl, s32 roomnum, struct roomblock *block, bool arg3)
 
 		v0 = (uintptr_t)g_Rooms[roomnum].colours;
 
-		if (v0 != NULL) {
+		if (v0 != (uintptr_t)NULL) {
 #ifdef PLATFORM_N64
 			s32 addr = ALIGN8((uintptr_t)&g_Rooms[roomnum].gfxdata->vertices[g_Rooms[roomnum].gfxdata->numvertices]);
 			v0 += (((intptr_t)block->colours - addr) >> 2) * 4;

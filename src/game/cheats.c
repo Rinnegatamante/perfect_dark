@@ -694,7 +694,7 @@ char *cheatGetMarquee(struct menuitem *arg0)
 						langGet(g_SoloStages[g_Cheats[cheat_id].stage_index].name1),
 						langGet(g_SoloStages[g_Cheats[cheat_id].stage_index].name2),
 						langGet(L_MPWEAPONS_138), // "for cheat:"
-						&cheatname
+						cheatname
 				);
 			} else {
 				// Timed
@@ -712,12 +712,12 @@ char *cheatGetMarquee(struct menuitem *arg0)
 						langGet(g_SoloStages[g_Cheats[cheat_id].stage_index].name1),
 						langGet(g_SoloStages[g_Cheats[cheat_id].stage_index].name2),
 						langGet(L_MPWEAPONS_139), // "on"
-						&difficultyname,
+						difficultyname,
 						langGet(L_MPWEAPONS_140), // "in under"
 						g_Cheats[cheat_id].time / 60,
 						g_Cheats[cheat_id].time % 60,
 						langGet(L_MPWEAPONS_138), // "for cheat:"
-						&cheatname
+						cheatname
 				);
 			}
 
@@ -763,7 +763,7 @@ char *cheatGetMarquee(struct menuitem *arg0)
 						langGet(g_SoloStages[g_Cheats[cheat_id].stage_index].name1),
 						langGet(g_SoloStages[g_Cheats[cheat_id].stage_index].name2),
 						langGet(L_MPWEAPONS_138), // "for cheat:"
-						&cheatname
+						cheatname
 				);
 			} else {
 				// Timed
@@ -781,12 +781,12 @@ char *cheatGetMarquee(struct menuitem *arg0)
 						langGet(g_SoloStages[g_Cheats[cheat_id].stage_index].name1),
 						langGet(g_SoloStages[g_Cheats[cheat_id].stage_index].name2),
 						langGet(L_MPWEAPONS_139), // "on"
-						&difficultyname,
+						difficultyname,
 						langGet(L_MPWEAPONS_140), // "in under"
 						g_Cheats[cheat_id].time / 60,
 						g_Cheats[cheat_id].time % 60,
 						langGet(L_MPWEAPONS_138), // "for cheat:"
-						&cheatname
+						cheatname
 				);
 			}
 

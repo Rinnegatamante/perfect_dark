@@ -319,7 +319,7 @@ static inline s32 romdataLoadExternalFileList(void)
 	}
 
 	s32 n = 1;
-	char *p = (char *)romDataSeg;
+	unsigned char *p = (unsigned char *)romDataSeg;
 	while (*p && n < ROMDATA_MAX_FILES) {
 		// skip whitespace
 		while (*p && isspace(*p)) ++p;

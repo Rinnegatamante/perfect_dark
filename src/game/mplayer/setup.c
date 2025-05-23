@@ -2572,6 +2572,8 @@ MenuDialogHandlerResult mpLoadSettingsDialogHandler(s32 operation, struct menudi
 			g_Menus[g_MpPlayerNum].mpsetup.showpresets = 1 - presets;
 		}
 	}
+	
+	return false;
 }
 
 struct menuitem g_MpCharacterMenuItems[] = {
@@ -3145,7 +3147,7 @@ MenuItemHandlerResult menuhandlerMpCopySimulant(s32 operation, struct menuitem *
 
 char *mpMenuTitleEditSimulant(struct menudialogdef *dialogdef)
 {
-	sprintf(g_StringPointer, "%s", &g_BotConfigsArray[g_Menus[g_MpPlayerNum].mpsetup.slotindex].base.name);
+	sprintf(g_StringPointer, "%s", g_BotConfigsArray[g_Menus[g_MpPlayerNum].mpsetup.slotindex].base.name);
 	return g_StringPointer;
 }
 

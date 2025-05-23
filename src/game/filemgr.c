@@ -213,7 +213,7 @@ void filemgrGetSelectName(char *buffer, struct filelistfile *file, u32 filetype)
 
 			if (days == 0) {
 				// seconds is passed but has no placeholder
-				sprintf(tmpbuffer1 + pos, "%d:%02d", hours, minutes, seconds);
+				sprintf(tmpbuffer1 + pos, "%d:%02d", hours, minutes);
 			} else {
 				sprintf(tmpbuffer1 + pos, "%d:%02d:%02d", days, hours, minutes);
 			}
@@ -2247,7 +2247,7 @@ MenuItemHandlerResult pakGameNoteListMenuHandler(s32 operation, struct menuitem 
 		} else {
 			sprintf(generalbuffer, langGet(L_OPTIONS_392)); // "Empty"
 			sprintf(pagesbuffer, langGet(L_OPTIONS_393)); // "--"
-			sprintf(extbuffer, "", tmpname, tmpext);
+			extbuffer[0] = 0;
 		}
 
 		// Render note name

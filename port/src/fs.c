@@ -43,7 +43,7 @@ static s32 fsPathIsWritable(const char *path)
 
 s32 fsPathIsAbsolute(const char *path)
 {
- return (path[0] == '/' || (isalpha(path[0]) && path[1] == ':'));
+ return (path[0] == '/' || (isalpha((unsigned char)path[0]) && path[1] == ':'));
 }
 
 s32 fsPathIsCwdRelative(const char *path)
