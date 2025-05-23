@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+#include <math.h>
 #include <ultra64.h>
 #include "constants.h"
 #include "game/bondgrab.h"
@@ -390,9 +392,9 @@ s32 bgrabCalculateNewPosition(struct coord *delta, f32 angle, bool arg2)
 	if (cdresult == CDRESULT_NOCOLLISION) {
 		struct coord sp7c;
 		f32 sp78 = -angle;
-		f32 sp74;
-		f32 sp70;
-		f32 sp6c;
+		f32 radians;
+		f32 cosine;
+		f32 sine;
 
 		obj = g_Vars.currentplayer->grabbedprop->obj;
 		hov = NULL;
@@ -464,22 +466,21 @@ s32 bgrabCalculateNewPosition(struct coord *delta, f32 angle, bool arg2)
 			f32 f12;
 			f32 f18;
 
-			sp74 = M_BADTAU - g_Vars.currentplayer->vv_theta * M_BADTAU / 360.0f - angle;
+			radians = M_BADTAU - g_Vars.currentplayer->vv_theta * M_BADTAU / 360.0f - angle;
 
-			if (sp74 >= M_BADTAU) {
-				sp74 -= M_BADTAU;
-			} else if (sp74 < 0.0f) {
-				sp74 += M_BADTAU;
+			if (radians >= M_BADTAU) {
+				radians -= M_BADTAU;
+			} else if (radians < 0.0f) {
+				radians += M_BADTAU;
 			}
-
-			sp70 = cosf(sp74);
-			sp6c = sinf(sp74);
+			
+			sincosf(radians, &sine, &cosine);
 
 			f12 = g_Vars.currentplayer->grabbedposoffset.f[0] + posextra.f[0];
 			f18 = g_Vars.currentplayer->grabbedposoffset.f[2] + posextra.f[2];
 
-			sp7c.x = pos.f[0] + f12 * sp70 + f18 * sp6c - g_Vars.currentplayer->grabbedprop->pos.f[0];
-			sp7c.z = pos.f[2] + f18 * sp70 - f12 * sp6c - g_Vars.currentplayer->grabbedprop->pos.f[2];
+			sp7c.x = pos.f[0] + f12 * cosine + f18 * sine - g_Vars.currentplayer->grabbedprop->pos.f[0];
+			sp7c.z = pos.f[2] + f18 * cosine - f12 * sine - g_Vars.currentplayer->grabbedprop->pos.f[2];
 		}
 
 		var80070e80 = true;

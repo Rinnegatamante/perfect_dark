@@ -939,7 +939,7 @@ static void import_texture(int i, int tile, bool importReplacement) {
 
 static void gfx_normalize_vector(float v[3]) {
 #ifdef __vita__
-	normalize3_neon(v, v);
+    normalize3_neon(v, v);
 #else
     float s = sqrtf(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
     v[0] /= s;
@@ -970,7 +970,7 @@ static void calculate_normal_dir(const struct NormalColor *vcn, float coeffs[3])
 
 static void gfx_matrix_mul(float res[4][4], const float a[4][4], const float b[4][4]) {
 #ifdef __vita__
-	matmul4_neon((float *)b, (float *)a, (float *)res);
+    matmul4_neon((float *)b, (float *)a, (float *)res);
 #else
     float tmp[4][4];
     for (int i = 0; i < 4; i++) {
@@ -978,7 +978,7 @@ static void gfx_matrix_mul(float res[4][4], const float a[4][4], const float b[4
             tmp[i][j] = a[i][0] * b[0][j] + a[i][1] * b[1][j] + a[i][2] * b[2][j] + a[i][3] * b[3][j];
         }
     }
-    memcpy(res, tmp, sizeof(tmp));	
+    memcpy(res, tmp, sizeof(tmp));
 #endif
 }
 
