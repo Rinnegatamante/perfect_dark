@@ -5,6 +5,10 @@
 #include "lib/mtx.h"
 #include "types.h"
 
+#ifdef __vita__
+#include <math_neon.h>
+#endif
+
 f32 var8005ef10[] = {65536, 65536};
 
 void mtx4LoadIdentity(Mtxf *mtx)
@@ -32,11 +36,18 @@ void mtx4LoadIdentity(Mtxf *mtx)
 
 void mtx4MultMtx4InPlace(Mtxf *multmtx, Mtxf *subject)
 {
+#ifdef __vita__
+	matmul4_neon((float *)multmtx->m, (float *)subject->m, (float *)subject->m);
+#else
 	mtx4MultMtx4(multmtx, subject, subject);
+#endif
 }
 
 void mtx4MultMtx4(Mtxf *mtx1, Mtxf *mtx2, Mtxf *dst)
 {
+#ifdef __vita__
+	matmul4_neon((float *)mtx1->m, (float *)mtx2->m, (float *)dst->m);
+#else
 	s32 i;
 	f32 m00 = mtx2->m[0][0];
 	f32 m01 = mtx2->m[0][1];
@@ -61,6 +72,7 @@ void mtx4MultMtx4(Mtxf *mtx1, Mtxf *mtx2, Mtxf *dst)
 		dst->m[2][i] = mtx1->m[0][i] * m20 + mtx1->m[1][i] * m21 + mtx1->m[2][i] * m22 + mtx1->m[3][i] * m23;
 		dst->m[3][i] = mtx1->m[0][i] * m30 + mtx1->m[1][i] * m31 + mtx1->m[2][i] * m32 + mtx1->m[3][i] * m33;
 	}
+#endif
 }
 
 void mtx4RotateVecInPlace(Mtxf *mtx, struct coord *vec)
