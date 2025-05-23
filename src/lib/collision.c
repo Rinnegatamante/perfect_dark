@@ -4247,7 +4247,7 @@ bool cdIsNearlyInSightWithFlags(struct coord *viewpos, RoomNum *rooms, struct co
 	vector.y = 0;
 	vector.z = targetpos->z - viewpos->z;
 
-	guNormalize(&vector.x, &vector.y, &vector.z);
+	guNormalize(&vector.x);
 
 	x = vector.f[0] * distance;
 	z = vector.f[2] * distance;

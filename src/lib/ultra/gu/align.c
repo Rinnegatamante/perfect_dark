@@ -1,11 +1,19 @@
 #include "guint.h"
 
-void guAlignF(float mf[4][4], float a, float x, float y, float z)
+#define x xyz[0]
+#define y xyz[1]
+#define z xyz[2]
+
+void guAlignF(float mf[4][4], float a, float *xyz)
 {
+	xyz[0] = -xyz[0];
+	xyz[1] = -xyz[1];
+	xyz[2] = -xyz[2];
+	
 	static float dtor = 3.1415926f / 180.0f;
 	float s, c, h, hinv;
 
-	guNormalize(&x, &y, &z);
+	guNormalize(xyz);
 
 	a *= dtor;
 	s = sinf(a);
@@ -37,13 +45,4 @@ void guAlignF(float mf[4][4], float a, float x, float y, float z)
 		mf[2][3] = 0;
 		mf[3][3] = 1;
 	}
-}
-
-void guAlign(Mtx *m, float a, float x, float y, float z)
-{
-	f32 mf[4][4];
-
-	guAlignF(mf, a, x, y, z);
-
-	guMtxF2L(mf, m);
 }

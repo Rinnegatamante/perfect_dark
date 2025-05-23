@@ -195,7 +195,7 @@ void bgrab0f0ccbf0(struct coord *delta, f32 angle, struct defaultobj *obj)
 			spc8.z = spb0.x - spa4.x;
 
 			if (spc8.f[0] != 0.0f || spc8.f[2] != 0.0f) {
-				guNormalize(&spc8.x, &spc8.y, &spc8.z);
+				guNormalize(&spc8.x);
 			} else {
 				spc8.z = 1.0f;
 			}
@@ -243,7 +243,7 @@ void bgrab0f0ccbf0(struct coord *delta, f32 angle, struct defaultobj *obj)
 			sp80.z = delta->z;
 
 			if (sp80.f[0] != 0.0f || sp80.f[2] != 0.0f) {
-				guNormalize(&sp80.x, &sp80.y, &sp80.z);
+				guNormalize(&sp80.x);
 			} else {
 				sp80.z = 1.0f;
 			}

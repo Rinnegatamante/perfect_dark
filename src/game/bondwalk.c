@@ -167,7 +167,7 @@ void bwalk0f0c3b38(struct coord *reltarget, struct defaultobj *obj)
 	vector.z = globalthinga.x - globalthingb.x;
 
 	if (vector.f[0] != 0 || vector.f[2] != 0) {
-		guNormalize(&vector.x, &vector.y, &vector.z);
+		guNormalize(&vector.x);
 	} else {
 		vector.z = 1;
 	}
@@ -426,7 +426,7 @@ bool bwalkCalculateNewPositionWithPush(struct coord *delta, f32 rotateamount, bo
 						sp90.z = sp84.f[0] - sp78.f[0];
 
 						if (sp90.f[0] || sp90.f[2]) {
-							guNormalize(&sp90.x, &sp90.y, &sp90.z);
+							guNormalize(&sp90.x);
 						} else {
 							sp90.z = 1;
 						}
@@ -1685,7 +1685,7 @@ void bwalk0f0c69b8(void)
 		}
 
 		if (g_Vars.currentplayer->onladder) {
-			guNormalize(&g_Vars.currentplayer->laddernormal.x, &g_Vars.currentplayer->laddernormal.y, &g_Vars.currentplayer->laddernormal.z);
+			guNormalize(&g_Vars.currentplayer->laddernormal.x);
 
 			sp74 = -(spcc.f[0] * g_Vars.currentplayer->laddernormal.f[0] + spcc.f[2] * g_Vars.currentplayer->laddernormal.f[2]);
 

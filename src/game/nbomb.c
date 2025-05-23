@@ -273,7 +273,7 @@ void nbomb0f0093c4(f32 *arg0)
 	arg0[2] = RANDOMFRAC() - 0.5f;
 	arg0[3] = RANDOMFRAC() - 0.5f;
 
-	guNormalize(&arg0[1], &arg0[2], &arg0[3]);
+	guNormalize(&arg0[1]);
 }
 
 void nbombReset(struct nbomb *nbomb)

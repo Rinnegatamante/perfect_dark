@@ -62,7 +62,7 @@ void setupPrepareCover(void)
 				} else if (!coverIsSpecial(&cover)) {
 					struct coord *look = cover.look;
 					look->y = 0;
-					guNormalize(&look->x, &look->y, &look->z);
+					guNormalize(&look->x);
 				}
 
 				// Find room

@@ -151,7 +151,7 @@ void starsReset(void)
 				spd4.f[1] = g_StarsBelowHorizon ? 2.0f * RANDOMFRAC() - 1.0f : RANDOMFRAC();
 				spd4.f[2] = 2.0f * RANDOMFRAC() - 1.0f;
 
-				guNormalize(&spd4.f[0], &spd4.f[1], &spd4.f[2]);
+				guNormalize(spd4.f);
 
 				f0 = (ABS2(spd4.f[0]) > ABS2(spd4.f[1])) ? (ABS2(spd4.f[0]) > ABS2(spd4.f[2]) ? ABS2(spd4.f[0]) : ABS2(spd4.f[2])) : (ABS2(spd4.f[1]) > ABS2(spd4.f[2]) ? ABS2(spd4.f[1]) : ABS2(spd4.f[2]));
 

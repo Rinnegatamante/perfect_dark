@@ -873,7 +873,7 @@ Gfx *titleRenderPdLogoModel(Gfx *gdl, struct model *model, bool arg2, f32 arg3, 
 				spc0[2] = spcc[2];
 
 				if (spc0[0] != 0.0f || spc0[1] != 0.0f || spc0[2] != 0.0f) {
-					guNormalize(&spc0[0], &spc0[1], &spc0[2]);
+					guNormalize(spc0);
 				}
 
 				spfc[j].r = (s32) (spc0[0] * 127.0f);
@@ -1894,7 +1894,7 @@ Gfx *titleRenderNintendoLogo(Gfx *gdl)
 	lightdir.z = sinf((1 - fracdone) * 1.5f * M_PI);
 	lightdir.x = cosf((1 - fracdone) * 1.5f * M_PI);
 
-	guNormalize(&lightdir.x, &lightdir.y, &lightdir.z);
+	guNormalize(&lightdir.x);
 
 	v0 = 255;
 
@@ -2083,7 +2083,7 @@ Gfx *titleRenderRareLogo(Gfx *gdl)
 		lightdir.z = sinf(func0f019d0c(fracdone));
 		lightdir.x = cosf(func0f019d0c(fracdone));
 
-		guNormalize(&lightdir.x, &lightdir.y, &lightdir.z);
+		guNormalize(&lightdir.x);
 
 		s0 = 255;
 
@@ -2114,7 +2114,7 @@ Gfx *titleRenderRareLogo(Gfx *gdl)
 		if (fracdone < 0.5f) {
 			lightdir.z = sinf(func0f019d0c(0.5f));
 			lightdir.x = cosf(func0f019d0c(0.5f));
-			guNormalize(&lightdir.x, &lightdir.y, &lightdir.z);
+			guNormalize(&lightdir.x);
 			titleSetLight(&var800625a8, s0, s0, s0, 0, &lightdir);
 		} else {
 			titleSetLight(&var800625a8, s0, s0, s0, 0, &lightdir);

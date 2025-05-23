@@ -4532,9 +4532,9 @@ void bgunCreateThrownProjectile(s32 handnum, struct gset *gset)
 
 	mtx4Copy(&g_Vars.currentplayer->hands[handnum].muzzlemat, &sp190);
 
-	guNormalize(&sp190.m[0][0], &sp190.m[0][1], &sp190.m[0][2]);
-	guNormalize(&sp190.m[1][0], &sp190.m[1][1], &sp190.m[1][2]);
-	guNormalize(&sp190.m[2][0], &sp190.m[2][1], &sp190.m[2][2]);
+	guNormalize(sp190.m[0]);
+	guNormalize(sp190.m[1]);
+	guNormalize(sp190.m[2]);
 
 	sp190.m[3][0] = 0.0f;
 	sp190.m[3][1] = 0.0f;
@@ -5370,7 +5370,7 @@ void bgunCalculateBotShotSpread(struct coord *arg0, s32 weaponnum, s32 funcnum, 
 	sp48.y = g_Vars.currentplayer->c_scaley * y;
 	sp48.z = -1.0f;
 
-	guNormalize(&sp48.x, &sp48.y, &sp48.z);
+	guNormalize(&sp48.x);
 	mtx00016b58(&mtx, 0.0f, 0.0f, 0.0f, arg0->x, arg0->y, arg0->z, 0.0f, -1.0f, 0.0f);
 	mtx4RotateVec(&mtx, &sp48, arg0);
 }
@@ -7409,12 +7409,17 @@ void bgun0f0a4e44(struct hand *hand, struct weapon *weapondef, struct modeldef *
 			sp60.z = rodata->pos.x * spd8.m[0][2] + rodata->pos.y * spd8.m[1][2] + rodata->pos.z * spd8.m[2][2] + spd8.m[3][2];
 
 			mtx4LoadIdentity(&sp70);
-			mtx4Align(sp70.m, RANDOMFRAC() * M_BADTAU, -sp60.x, -sp60.y, -sp60.z);
+			mtx4Align(sp70.m, RANDOMFRAC() * M_BADTAU, &sp60.x);
 			mtx00015f04(0.10000001f * spb4, &sp70);
 
 			mtx = (Mtxf *)allocation;
 
-			mtx00016e98(arg10->m, 0, mtx->m[3][0] - hand->aimpos.x, mtx->m[3][1] - hand->aimpos.y, mtx->m[3][2] - hand->aimpos.z);
+			float xyz[3] = {
+				mtx->m[3][0] - hand->aimpos.x,
+				mtx->m[3][1] - hand->aimpos.y,
+				mtx->m[3][2] - hand->aimpos.z
+			};
+			mtx00016e98(arg10->m, 0, xyz);
 			mtx4MultMtx4InPlace(arg10, &sp70);
 			mtx00016710(muzzlez, sp70.m);
 			mtx4MultMtx4InPlace(arg9, &sp70);

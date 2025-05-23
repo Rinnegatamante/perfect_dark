@@ -5090,7 +5090,7 @@ void chrDamage(struct chrdata *chr, f32 damage, struct coord *vector, struct gse
 					chr->extraspeed.y = prop2->pos.y - aprop->pos.y;
 					chr->extraspeed.z = prop2->pos.z - aprop->pos.z;
 
-					guNormalize(&chr->extraspeed.x, &chr->extraspeed.y, &chr->extraspeed.z);
+					guNormalize(&chr->extraspeed.x);
 
 					chr->extraspeed.x *= sp80;
 					chr->extraspeed.y *= sp80;
@@ -7733,7 +7733,7 @@ void chrPunchInflictDamage(struct chrdata *chr, s32 damage, s32 range, u8 revers
 		vector.y = 0;
 		vector.z = targetprop->pos.z - chr->prop->pos.z;
 
-		guNormalize(&vector.x, &vector.y, &vector.z);
+		guNormalize(&vector.x);
 
 		bgunPlayPropHitSound(&gset, targetprop, -1);
 
@@ -10019,7 +10019,7 @@ void chrTickShoot(struct chrdata *chr, s32 handnum)
 					vector.y = targetprop->pos.y - gunpos.y;
 					vector.z = targetprop->pos.z - gunpos.z;
 
-					guNormalize(&vector.x, &vector.y, &vector.z);
+					guNormalize(&vector.x);
 					propSetPerimEnabled(targetprop, true);
 				} else {
 					vector.x = cosf(rotx) * sinf(roty);
@@ -10178,7 +10178,7 @@ void chrTickShoot(struct chrdata *chr, s32 handnum)
 										vector.y = aimpos.y - gunpos.y;
 										vector.z = aimpos.z - gunpos.z;
 
-										guNormalize(&vector.x, &vector.y, &vector.z);
+										guNormalize(&vector.x);
 										hasaimpos = true;
 									}
 								} else if ((gset.weaponnum == WEAPON_DEVASTATOR && gset.weaponfunc == FUNC_PRIMARY)
@@ -15579,8 +15579,8 @@ s32 chrAssignCoverByCriteria(struct chrdata *chr, u16 criteria, s32 refdist)
 s32 chrAssignCoverAwayFromDanger(struct chrdata *chr, s32 mindist, s32 maxdist)
 {
 	s32 i;
-	f32 vecfromdanger[2];
-	f32 vectocover[2];
+	f32 vecfromdanger[3];
+	f32 vectocover[3];
 	f32 y;
 	f32 ymax;
 	f32 bestsqdist;
@@ -15602,13 +15602,11 @@ s32 chrAssignCoverAwayFromDanger(struct chrdata *chr, s32 mindist, s32 maxdist)
 	mindist *= mindist;
 	maxdist *= maxdist;
 
-	if (mindist);
-	if (maxdist);
-
 	vecfromdanger[0] = chr->prop->pos.x - chr->runfrompos.x;
-	vecfromdanger[1] = chr->prop->pos.z - chr->runfrompos.z;
+	vecfromdanger[1] = y;
+	vecfromdanger[2] = chr->prop->pos.z - chr->runfrompos.z;
 
-	guNormalize(&vecfromdanger[0], &y, &vecfromdanger[1]);
+	guNormalize(vecfromdanger);
 
 	for (i = 0; i < numcovers; i++) {
 		if (coverUnpack(i, &cover) && !coverIsInUse(i) && !(cover.pos->y > ymax) && !coverIsSpecial(&cover)) {
@@ -15616,11 +15614,12 @@ s32 chrAssignCoverAwayFromDanger(struct chrdata *chr, s32 mindist, s32 maxdist)
 
 			if (!(coversqdistfrompos < mindist) && !(coversqdistfrompos > maxdist)) {
 				vectocover[0] = cover.pos->x - chr->prop->pos.x;
-				vectocover[1] = cover.pos->z - chr->prop->pos.z;
+				vectocover[1] = vecfromdanger[1];
+				vectocover[2] = cover.pos->z - chr->prop->pos.z;
+				
+				guNormalize(vectocover);
 
-				guNormalize(&vectocover[0], &y, &vectocover[1]);
-
-				sqdist = vecfromdanger[0] * vectocover[0] + vecfromdanger[1] * vectocover[1];
+				sqdist = vecfromdanger[0] * vectocover[0] + vecfromdanger[2] * vectocover[2];
 
 				if (!(sqdist < 0) && sqdist > bestsqdist) {
 					bestsqdist = sqdist;

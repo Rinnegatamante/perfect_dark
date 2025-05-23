@@ -436,8 +436,12 @@ u32 mtx00016dcc(f32 arg0, f32 arg1)
 	return result;
 }
 
-void mtx00016e98(f32 mtx[4][4], f32 angle, f32 x, f32 y, f32 z)
+void mtx00016e98(f32 mtx[4][4], f32 angle, f32 *xyz)
 {
+	#define x xyz[0]
+	#define y xyz[1]
+	#define z xyz[2]
+	
 	f32 sine;
 	f32 cosine;
 	f32 norm;
@@ -447,7 +451,7 @@ void mtx00016e98(f32 mtx[4][4], f32 angle, f32 x, f32 y, f32 z)
 	f32 cos_z;
 	f32 sin_z;
 
-	guNormalize(&x, &y, &z);
+	guNormalize(xyz);
 	sine = sinf(angle);
 	cosine = cosf(angle);
 	norm = sqrtf(x * x + z * z);
@@ -480,12 +484,16 @@ void mtx00016e98(f32 mtx[4][4], f32 angle, f32 x, f32 y, f32 z)
 	}
 
 	mtx4LoadIdentity((Mtxf *)mtx);
+	
+	#undef x
+	#undef y
+	#undef z
 }
 
-void mtx4Align(f32 mtx[4][4], f32 angle, f32 x, f32 y, f32 z)
+void mtx4Align(f32 mtx[4][4], f32 angle, f32 *xyz)
 {
 	angle = RAD2DEG(angle);
-	guAlignF(mtx, angle, x, y, z);
+	guAlignF(mtx, angle, xyz);
 }
 
 #if VERSION < VERSION_NTSC_1_0

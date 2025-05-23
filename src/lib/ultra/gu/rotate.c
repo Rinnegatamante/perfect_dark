@@ -6,8 +6,9 @@ void guRotateF(float mf[4][4], float a, float x, float y, float z)
 	float sine;
 	float cosine;
 	float ab, bc, ca, t;
-
+#if 0 // Rinnegatamante: This gets called only with xyz == 0,1,0 which are already normalized
 	guNormalize(&x, &y, &z);
+#endif
 	a *= 3.1415926f / 180.0f;
 	sine = sinf(a);
 	cosine = cosf(a);

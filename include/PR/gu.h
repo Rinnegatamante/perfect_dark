@@ -150,8 +150,6 @@ extern void guRotate(Mtx *m, float a, float x, float y, float z);
 extern void guRotateF(float mf[4][4], float a, float x, float y, float z);
 extern void guRotateRPY(Mtx *m, float r, float p, float y);
 extern void guRotateRPYF(float mf[4][4], float r, float p, float h);
-extern void guAlign(Mtx *m, float a, float x, float y, float z);
-extern void guAlignF(float mf[4][4], float a, float x, float y, float z);
 extern void guScale(Mtx *m, float x, float y, float z);
 extern void guScaleF(float mf[4][4], float x, float y, float z);
 extern void guTranslate(Mtx *m, float x, float y, float z);
@@ -170,7 +168,7 @@ extern void guMtxXFML(Mtx *m, float x, float y, float z,
 		      float *ox, float *oy, float *oz);
 
 /* vector utility: */
-extern void guNormalize(float *x, float *y, float *z);
+extern void guNormalize(float *xyz);
 
 /* light utilities: */
 void guPosLight(PositionalLight *pl, Light *l,

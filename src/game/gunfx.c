@@ -143,13 +143,13 @@ void beamCreateForHand(s32 handnum)
 				disttolast.y = hand->hitpos.y - player->chrmuzzlelastpos[handnum].y;
 				disttolast.z = hand->hitpos.z - player->chrmuzzlelastpos[handnum].z;
 
-				guNormalize(&disttolast.x, &disttolast.y, &disttolast.z);
+				guNormalize(&disttolast.x);
 
 				disttocur.x = hand->hitpos.x - hand->muzzlepos.x;
 				disttocur.y = hand->hitpos.y - hand->muzzlepos.y;
 				disttocur.z = hand->hitpos.z - hand->muzzlepos.z;
 
-				guNormalize(&disttocur.x, &disttocur.y, &disttocur.z);
+				guNormalize(&disttocur.x);
 
 				radians = acosf(disttolast.f[0] * disttocur.f[0] + disttolast.f[1] * disttocur.f[1] + disttolast.f[2] * disttocur.f[2]);
 
@@ -233,7 +233,7 @@ Gfx *beamRenderGeneric(Gfx *gdl, struct textureconfig *texconfig,
 	spd0.f[2] = (spe4.f[0] * (campos->f[1] - (headpos->f[1] + length * spe4.f[1]))) - (spe4.f[1] * (campos->f[0] - (headpos->f[0] + length * spe4.f[0])));
 
 	if (spd0.f[0] != 0.0f || spd0.f[1] != 0.0f || spd0.f[2] != 0.0f) {
-		guNormalize(&spd0.f[0], &spd0.f[1], &spd0.f[2]);
+		guNormalize(spd0.f);
 	} else {
 		spd0.f[0] = 0.0f;
 		spd0.f[1] = 1.0f;
@@ -398,7 +398,7 @@ Gfx *beamRender(Gfx *gdl, struct beam *beam, bool arg2, u8 arg3)
 		sp10c.f[2] = (beam->dir.f[0] * (campos->f[1] - (sp138.f[1] + sp12c * beam->dir.f[1]))) - (beam->dir.f[1] * (campos->f[0] - (sp138.f[0] + sp12c * beam->dir.f[0])));
 
 		if (sp10c.f[0] != 0.0f || sp10c.f[1] != 0.0f || sp10c.f[2] != 0.0f) {
-			guNormalize(&sp10c.f[0], &sp10c.f[1], &sp10c.f[2]);
+			guNormalize(sp10c.f);
 
 			sp10c.f[0] *= sp130;
 			sp10c.f[1] *= sp130;
@@ -413,7 +413,7 @@ Gfx *beamRender(Gfx *gdl, struct beam *beam, bool arg2, u8 arg3)
 		sp118.f[1] = beam->dir.f[2] * sp10c.f[0] - beam->dir.f[0] * sp10c.f[2];
 		sp118.f[2] = beam->dir.f[0] * sp10c.f[1] - beam->dir.f[1] * sp10c.f[0];
 
-		guNormalize(&sp118.f[0], &sp118.f[1], &sp118.f[2]);
+		guNormalize(sp118.f);
 
 		sp118.f[0] *= sp130;
 		sp118.f[1] *= sp130;
@@ -1314,7 +1314,7 @@ Gfx *lasersightRenderBeam(Gfx *gdl)
 			spa8.y = 2.0f;
 			spa8.z = 0.0f;
 
-			guNormalize(&spa8.x, &spa8.y, &spa8.z);
+			guNormalize(&spa8.x);
 
 			mtx4RotateVecInPlace(&sp10c, &spa8);
 
@@ -1338,7 +1338,7 @@ Gfx *lasersightRenderBeam(Gfx *gdl)
 			spb4.y = spc0.f[1] - spcc.y;
 			spb4.z = spc0.f[2] - spcc.z;
 
-			guNormalize(&spb4.x, &spb4.y, &spb4.z);
+			guNormalize(&spb4.x);
 
 			colours = gfxAllocateColours(2);
 

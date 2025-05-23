@@ -842,7 +842,7 @@ bool aiChrDamageChr(void)
 			vector.x = chr2->prop->pos.x - chr1->prop->pos.x;
 			vector.y = chr2->prop->pos.y - chr1->prop->pos.y;
 			vector.z = chr2->prop->pos.z - chr1->prop->pos.z;
-			guNormalize(&vector.x, &vector.y, &vector.z);
+			guNormalize(&vector.x);
 			weapon = prop->weapon;
 			damage = gsetGetDamage(&weapon->gset);
 			chrDamageByImpact(chr2, damage, &vector, &weapon->gset, chr1->prop, (s8)cmd[4]);

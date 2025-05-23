@@ -2641,7 +2641,7 @@ bool func0f06b488(struct prop *prop, struct coord *arg1, struct coord *arg2, str
 			arg5->z = -arg3->z;
 
 			if (arg5->x != 0.0f || arg5->z != 0.0f) {
-				guNormalize(&arg5->x, &arg5->y, &arg5->z);
+				guNormalize(&arg5->x);
 			} else {
 				arg5->z = 1.0f;
 			}
@@ -2713,7 +2713,7 @@ bool func0f06b610(struct defaultobj *obj, struct coord *arg1, struct coord *arg2
 							mtx4RotateVec(camGetProjectionMtxF(), &spf0, arg8);
 
 							if (arg8->x != 0.0f || arg8->y != 0.0f || arg8->z != 0.0f) {
-								guNormalize(&arg8->x, &arg8->y, &arg8->z);
+								guNormalize(&arg8->x);
 							} else {
 								arg8->z = 1.0f;
 							}
@@ -2791,7 +2791,7 @@ bool func0f06b610(struct defaultobj *obj, struct coord *arg1, struct coord *arg2
 						mtx4RotateVec(camGetProjectionMtxF(), &spf0, arg8);
 
 						if (arg8->f[0] != 0.0f || arg8->f[1] != 0.0f || arg8->f[2] != 0.0f) {
-							guNormalize(&arg8->x, &arg8->y, &arg8->z);
+							guNormalize(&arg8->x);
 						} else {
 							arg8->z = 1.0f;
 						}
@@ -3045,7 +3045,7 @@ bool func0f06c28c(struct chrdata *chr, struct coord *arg1, struct coord *arg2, s
 							mtx4RotateVec(camGetProjectionMtxF(), &spac, arg8);
 
 							if (arg8->x != 0.0f || arg8->y != 0.0f || arg8->z != 0.0f) {
-								guNormalize(&arg8->x, &arg8->y, &arg8->z);
+								guNormalize(&arg8->x);
 							} else {
 								arg8->z = 1.0f;
 							}
@@ -3077,7 +3077,7 @@ bool func0f06c28c(struct chrdata *chr, struct coord *arg1, struct coord *arg2, s
 					mtx4RotateVec(camGetProjectionMtxF(), &sp7c.unk0c, arg8);
 
 					if (arg8->x != 0.0f || arg8->y != 0.0f || arg8->z != 0.0f) {
-						guNormalize(&arg8->x, &arg8->y, &arg8->z);
+						guNormalize(&arg8->x);
 					} else {
 						arg8->z = 1.0f;
 					}
@@ -3364,7 +3364,7 @@ s32 func0f06cd00(struct defaultobj *obj, struct coord *pos, struct coord *arg2, 
 			arg2->z -= mult * dist.z;
 
 			if (arg3->x != 0.0f || arg3->y != 0.0f || arg3->z != 0.0f) {
-				guNormalize(&arg3->x, &arg3->y, &arg3->z);
+				guNormalize(&arg3->x);
 			} else {
 				arg3->z = 1.0f;
 			}
@@ -3434,7 +3434,7 @@ bool func0f06d37c(struct defaultobj *obj, struct coord *arg1, struct coord *arg2
 				arg3->z = sp64.x - sp58.x;
 
 				if (arg3->x != 0.0f || arg3->z != 0.0f) {
-					guNormalize(&arg3->x, &arg3->y, &arg3->z);
+					guNormalize(&arg3->x);
 				} else {
 					arg3->z = 1.0f;
 				}
@@ -6518,7 +6518,7 @@ s32 projectileTick(struct defaultobj *obj, bool *embedded)
 						sp3f4.z = sp3e8.x - sp3dc.x;
 
 						if (sp3f4.f[0] != 0.0f || sp3f4.f[2] != 0.0f) {
-							guNormalize(&sp3f4.x, &sp3f4.y, &sp3f4.z);
+							guNormalize(&sp3f4.x);
 						} else {
 							sp3f4.z = 1.0f;
 						}
@@ -6773,13 +6773,13 @@ s32 projectileTick(struct defaultobj *obj, bool *embedded)
 						sp290.y = projectile->targetprop->pos.y - sp2f8.y;
 						sp290.z = projectile->targetprop->pos.z - sp2f8.z;
 
-						guNormalize(&sp290.x, &sp290.y, &sp290.z);
+						guNormalize(&sp290.x);
 
 						sp2ec.x = projectile->speed.x;
 						sp2ec.y = projectile->speed.y;
 						sp2ec.z = projectile->speed.z;
 
-						guNormalize(&sp2ec.x, &sp2ec.y, &sp2ec.z);
+						guNormalize(&sp2ec.x);
 
 						sp28c = acosf(sp2ec.f[0] * sp290.f[0] + sp2ec.f[1] * sp290.f[1] + sp2ec.f[2] * sp290.f[2]);
 
@@ -7154,7 +7154,7 @@ s32 projectileTick(struct defaultobj *obj, bool *embedded)
 										dir.y = projectile->speed.y;
 										dir.z = projectile->speed.z;
 
-										guNormalize(&dir.x, &dir.y, &dir.z);
+										guNormalize(&dir.x);
 
 										if (chrIsUsingPaintball(ownerprop ? ownerprop->chr : NULL)) {
 											sparksCreate(prop->rooms[0], prop, &sp5e8, &dir, &sp5f4, SPARKTYPE_PAINT);
@@ -7231,7 +7231,7 @@ s32 projectileTick(struct defaultobj *obj, bool *embedded)
 						sp5f4.y = sp380.y;
 						sp5f4.z = sp380.z;
 
-						guNormalize(&sp5f4.x, &sp5f4.y, &sp5f4.z);
+						guNormalize(&sp5f4.x);
 
 						sp5e8.x = prop->pos.x;
 						sp5e8.y = sp390;
@@ -7384,7 +7384,7 @@ s32 projectileTick(struct defaultobj *obj, bool *embedded)
 									smokepos.y = projectile->speed.y;
 									smokepos.z = projectile->speed.z;
 
-									guNormalize(&smokepos.x, &smokepos.y, &smokepos.z);
+									guNormalize(&smokepos.x);
 
 									smokepos.x = prop->pos.x - smokepos.x * 20.0f;
 									smokepos.y = prop->pos.y - smokepos.y * 20.0f;
@@ -9603,7 +9603,7 @@ f32 func0f07b164(struct coord *pos1, struct coord *pos2, struct coord *pos3, str
 	sp28.y = pos3->y - pos1->y;
 	sp28.z = pos3->z - pos1->z;
 
-	guNormalize(&sp34.x, &sp34.y, &sp34.z);
+	guNormalize(&sp34.x);
 
 	tmp = sp28.f[0] * sp34.f[0] + sp28.f[1] * sp34.f[1] + sp28.f[2] * sp34.f[2];
 
@@ -9641,7 +9641,7 @@ void chopperFireRocket(struct chopperobj *chopper, bool side)
 		direction.y = targetprop->pos.y - pos.y + (s32)(rngRandom() % 100);
 		direction.z = targetprop->pos.z - pos.z;
 
-		guNormalize(&direction.x, &direction.y, &direction.z);
+		guNormalize(&direction.x);
 
 		smokeCreateSimple(&pos, chopperprop->rooms, SMOKETYPE_3);
 
@@ -9882,7 +9882,7 @@ void chopperIncrementMovement(struct prop *prop, f32 goalroty, f32 goalrotx, str
 		tmp = chopper->vx * chopper->vx + chopper->vy * chopper->vy + chopper->vz * chopper->vz;
 
 		if (tmp > speed * speed) {
-			guNormalize(&chopper->vx, &chopper->vy, &chopper->vz);
+			guNormalize(&chopper->vx);
 
 			chopper->vx *= speed;
 			chopper->vy *= speed;
@@ -10224,7 +10224,7 @@ void chopperTickPatrol(struct prop *chopperprop)
 		vector.y = pad.pos.y - chopperprop->pos.y;
 		vector.z = pad.pos.z - chopperprop->pos.z;
 
-		guNormalize(&vector.x, &vector.y, &vector.z);
+		guNormalize(&vector.x);
 	} else {
 		mult = cosf(chopper->rotx);
 
@@ -10355,7 +10355,7 @@ void chopperTickCombat(struct prop *chopperprop)
 			sp78.y = pad.pos.y - goalpos.y;
 			sp78.z = pad.pos.z - goalpos.z;
 
-			guNormalize(&sp78.x, &sp78.y, &sp78.z);
+			guNormalize(&sp78.x);
 
 			goalpos.x += sp78.x * 400.0f;
 			goalpos.y += sp78.y * 400.0f;
@@ -10376,7 +10376,7 @@ void chopperTickCombat(struct prop *chopperprop)
 		dir.y = goalpos.y - chopperprop->pos.y;
 		dir.z = goalpos.z - chopperprop->pos.z;
 
-		guNormalize(&dir.x, &dir.y, &dir.z);
+		guNormalize(&dir.x);
 
 		if (dir.f[0] * chopper->otx + dir.f[1] * chopper->oty + dir.f[2] * chopper->otz < 0.0f) {
 			chopper->power = 0.0f;
