@@ -182,13 +182,21 @@ include_directories("${CMAKE_SOURCE_DIR}/port/include")
 include_directories("${CMAKE_BINARY_DIR}/port/include")
 
 # Set Release optimization to -Og until I fix the -O2 issues
-if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug"))
-  add_compile_options(-Og)
+if (VITA)
+  add_compile_options(-O3
+    -fno-optimize-sibling-calls
+	-fno-peephole2
+	-fno-schedule-insns2
+  )
+else()
+  if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug"))
+    add_compile_options(-Og)
+  endif()
 endif()
+
 
 # Common CFLAGS
 add_compile_options(
-  -fno-inline-functions
   -fno-strict-aliasing
   -funsigned-char
   -fwrapv
@@ -198,6 +206,7 @@ add_compile_options(
 # Common warning flags
 add_compile_options(
   -Wall
+  -Wno-maybe-uninitialized
   -Wno-address
   -Wno-int-in-bool-context
   -Wno-misleading-indentation

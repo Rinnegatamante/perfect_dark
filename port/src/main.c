@@ -98,14 +98,27 @@ static void cleanup(void)
 	// TODO: actually shut down all subsystems
 }
 
+#ifdef __vita__
+int pd_main (unsigned int argc, void *argv);
+int main(int argc, char **argv) {
+	// We need a bigger stack to run Perfect Dark, so we create a new thread with a proper stack size
+	SceUID main_thread = sceKernelCreateThread("Perfect Dark", pd_main, 0x40, 0x800000, 0, 0, NULL);
+	if (main_thread >= 0){
+		sceKernelStartThread(main_thread, 0, NULL);
+	}
+	return sceKernelExitDeleteThread(0);
+}
+int pd_main (unsigned int argc, void *argv)
+#else
 int main(int argc, const char **argv)
+#endif
 {
 #ifdef __vita__
 	scePowerSetArmClockFrequency(444);
 	scePowerSetBusClockFrequency(222);
 	scePowerSetGpuClockFrequency(222);
 	scePowerSetGpuXbarClockFrequency(166);
-	char *vita_args[8] = {
+	const char *vita_args[8] = {
 		"ux0:data/pd",
 		"--basedir",
 		"ux0:data/pd",
