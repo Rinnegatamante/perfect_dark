@@ -18,6 +18,13 @@
 #include <memory>
 #include <limits>
 
+#ifdef __vita__
+extern "C" {
+    void normalize3_neon(float v[3], float d[3]);
+    void matmul4_neon(float m0[16], float m1[16], float d[16]);
+};
+#endif
+
 #ifndef _LANGUAGE_C
 #define _LANGUAGE_C
 #endif
@@ -931,10 +938,14 @@ static void import_texture(int i, int tile, bool importReplacement) {
 }
 
 static void gfx_normalize_vector(float v[3]) {
+#ifdef __vita__
+	normalize3_neon(v, v);
+#else
     float s = sqrtf(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
     v[0] /= s;
     v[1] /= s;
     v[2] /= s;
+#endif
 }
 
 static void gfx_transposed_matrix_mul(float res[3], const float a[3], const float b[4][4]) {
@@ -958,13 +969,17 @@ static void calculate_normal_dir(const struct NormalColor *vcn, float coeffs[3])
 }
 
 static void gfx_matrix_mul(float res[4][4], const float a[4][4], const float b[4][4]) {
+#ifdef __vita__
+	matmul4_neon((float *)b, (float *)a, (float *)res);
+#else
     float tmp[4][4];
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
             tmp[i][j] = a[i][0] * b[0][j] + a[i][1] * b[1][j] + a[i][2] * b[2][j] + a[i][3] * b[3][j];
         }
     }
-    memcpy(res, tmp, sizeof(tmp));
+    memcpy(res, tmp, sizeof(tmp));	
+#endif
 }
 
 static void gfx_sp_matrix(uint8_t parameters, const int32_t* addr) {
