@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+#include <math.h>
 #include <ultra64.h>
 #include "constants.h"
 #include "game/atan2f.h"
@@ -49,8 +51,8 @@ void mtx00016208(f32 mtx[3][3], struct coord *coord)
 
 void mtx4LoadYRotationWithTranslation(struct coord *coord, f32 angle, Mtxf *mtx)
 {
-	f32 cos = cosf(angle);
-	f32 sin = sinf(angle);
+	f32 sin, cos;
+	sincosf(angle, &sin, &cos);
 
 	mtx->m[0][0] = cos;
 	mtx->m[0][1] = 0;
@@ -76,8 +78,8 @@ void mtx4LoadYRotationWithTranslation(struct coord *coord, f32 angle, Mtxf *mtx)
 #if VERSION < VERSION_NTSC_1_0
 void mtx4LoadXRotationWithTranslation(struct coord *coord, f32 angle, Mtxf *mtx)
 {
-	f32 cos = cosf(angle);
-	f32 sin = sinf(angle);
+	f32 cos, sin;
+	sincosf(angle, &sin, &cos);
 
 	mtx->m[0][0] = 1;
 	mtx->m[0][1] = 0;
@@ -103,8 +105,8 @@ void mtx4LoadXRotationWithTranslation(struct coord *coord, f32 angle, Mtxf *mtx)
 
 void mtx4LoadXRotation(f32 angle, Mtxf *mtx)
 {
-	f32 cos = cosf(angle);
-	f32 sin = sinf(angle);
+	f32 cos, sin;
+	sincosf(angle, &sin, &cos);
 
 	mtx->m[0][0] = 1;
 	mtx->m[0][1] = 0;
@@ -129,8 +131,8 @@ void mtx4LoadXRotation(f32 angle, Mtxf *mtx)
 
 void mtx4LoadYRotation(f32 angle, Mtxf *mtx)
 {
-	f32 cos = cosf(angle);
-	f32 sin = sinf(angle);
+	f32 cos, sin;
+	sincosf(angle, &sin, &cos);
 
 	mtx->m[0][0] = cos;
 	mtx->m[0][1] = 0;
@@ -155,8 +157,8 @@ void mtx4LoadYRotation(f32 angle, Mtxf *mtx)
 
 void mtx4LoadZRotation(f32 angle, Mtxf *mtx)
 {
-	f32 cos = cosf(angle);
-	f32 sin = sinf(angle);
+	f32 cos, sin;
+	sincosf(angle, &sin, &cos);
 
 	mtx->m[0][0] = cos;
 	mtx->m[0][1] = sin;
@@ -181,12 +183,10 @@ void mtx4LoadZRotation(f32 angle, Mtxf *mtx)
 
 void mtx4LoadRotation(struct coord *src, Mtxf *dest)
 {
-	f32 xcos = cosf(src->x);
-	f32 xsin = sinf(src->x);
-	f32 ycos = cosf(src->y);
-	f32 ysin = sinf(src->y);
-	f32 zcos = cosf(src->z);
-	f32 zsin = sinf(src->z);
+	f32 xcos, xsin, ycos, ysin, zcos, zsin;
+	sincosf(src->x, &xsin, &xcos);
+	sincosf(src->y, &ysin, &ycos);
+	sincosf(src->z, &zsin, &zcos);
 	f32 a = xsin * zsin;
 	f32 b = xcos * zsin;
 	f32 c = xsin * zcos;
@@ -452,8 +452,7 @@ void mtx00016e98(f32 mtx[4][4], f32 angle, f32 *xyz)
 	f32 sin_z;
 
 	guNormalize(xyz);
-	sine = sinf(angle);
-	cosine = cosf(angle);
+	sincosf(angle, &sine, &cosine);
 	norm = sqrtf(x * x + z * z);
 
 	if (norm != 0) {

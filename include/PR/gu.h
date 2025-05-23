@@ -150,6 +150,7 @@ extern void guRotate(Mtx *m, float a, float x, float y, float z);
 extern void guRotateF(float mf[4][4], float a, float x, float y, float z);
 extern void guRotateRPY(Mtx *m, float r, float p, float y);
 extern void guRotateRPYF(float mf[4][4], float r, float p, float h);
+extern void guAlignF(float mf[4][4], float a, float *xyz);
 extern void guScale(Mtx *m, float x, float y, float z);
 extern void guScaleF(float mf[4][4], float x, float y, float z);
 extern void guTranslate(Mtx *m, float x, float y, float z);
