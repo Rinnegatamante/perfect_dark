@@ -20,6 +20,7 @@
 
 #ifdef __vita__
 #include <vitasdk.h>
+#include <vitaGL.h>
 int _newlib_heap_size_user = 256 * 1024 * 1024;
 #endif
 
@@ -99,26 +100,68 @@ static void cleanup(void)
 }
 
 #ifdef __vita__
-int pd_main (unsigned int argc, void *argv);
-int main(int argc, char **argv) {
-	// We need a bigger stack to run Perfect Dark, so we create a new thread with a proper stack size
-	SceUID main_thread = sceKernelCreateThread("Perfect Dark", pd_main, 0x40, 0x800000, 0, 0, NULL);
-	if (main_thread >= 0){
-		sceKernelStartThread(main_thread, 0, NULL);
-	}
-	return sceKernelExitDeleteThread(0);
+char audio_arg[32] = {};
+
+void vita_fatal_error(const char *fmt, ...) {
+	va_list list;
+	char string[512];
+
+	va_start(list, fmt);
+	vsnprintf(string, sizeof(string), fmt, list);
+	va_end(list);
+
+	vglInit(0);
+
+	SceMsgDialogUserMessageParam msg_param;
+	memset(&msg_param, 0, sizeof(msg_param));
+	msg_param.buttonType = SCE_MSG_DIALOG_BUTTON_TYPE_OK;
+	msg_param.msg = (SceChar8 *)string;
+
+	SceMsgDialogParam param;
+	sceMsgDialogParamInit(&param);
+	_sceCommonDialogSetMagicNumber(&param.commonParam);
+	param.mode = SCE_MSG_DIALOG_MODE_USER_MSG;
+	param.userMsgParam = &msg_param;
+
+	sceMsgDialogInit(&param);
+
+	while (sceMsgDialogGetStatus() != SCE_COMMON_DIALOG_STATUS_FINISHED)
+		vglSwapBuffers(GL_TRUE);
+	
+	sceMsgDialogTerm();
+
+	sceKernelExitProcess(0);
+	while (1);
 }
-int pd_main (unsigned int argc, void *argv)
-#else
-int main(int argc, const char **argv)
 #endif
-{
+
+int main(int argc, const char **argv) {
 #ifdef __vita__
+	SceIoStat st;
+	if (sceIoGetstat("ux0:data/pd/pd.ntsc-final.z64", &st) < 0) {
+		vita_fatal_error("FATAL ERROR: ux0:data/pd/pd.ntsc-final.z64 not found!");
+	} else if (sceIoGetstat("ur0:/data/libshacccg.suprx", &st) < 0 && sceIoGetstat("ur0:/data/external/libshacccg.suprx", &st) < 0) {
+		vita_fatal_error("FATAL ERROR: Runtime shader compiler (libshacccg.suprx) not installed!");
+	}
+
+	sceAppUtilInit(&(SceAppUtilInitParam){}, &(SceAppUtilBootParam){});
+	SceAppUtilAppEventParam eventParam;
+	sceClibMemset(&eventParam, 0, sizeof(SceAppUtilAppEventParam));
+	sceAppUtilReceiveAppEvent(&eventParam);
+	if (eventParam.type == 0x05) {
+		char buffer[2048];
+		sceAppUtilAppEventParseLiveArea(&eventParam, buffer);
+		if (strstr(buffer, "no_audio"))
+			strcpy(audio_arg, "--no-sound");
+	}
+	
+	strcpy(audio_arg, "--no-sound");
+	
 	scePowerSetArmClockFrequency(444);
 	scePowerSetBusClockFrequency(222);
 	scePowerSetGpuClockFrequency(222);
 	scePowerSetGpuXbarClockFrequency(166);
-	const char *vita_args[8] = {
+	const char *vita_args[9] = {
 		"ux0:data/pd",
 		"--basedir",
 		"ux0:data/pd",
@@ -126,9 +169,10 @@ int main(int argc, const char **argv)
 		"ux0:data/pd",
 		"--savedir",
 		"",
+		audio_arg,
 		0
 	};
-	sysInitArgs(7, vita_args);
+	sysInitArgs(8, vita_args);
 #else	
 	sysInitArgs(argc, argv);
 #endif
