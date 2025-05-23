@@ -185,8 +185,8 @@ include_directories("${CMAKE_BINARY_DIR}/port/include")
 if (VITA)
   add_compile_options(-O3
     -fno-optimize-sibling-calls
-	-fno-peephole2
-	-fno-schedule-insns2
+    -fno-peephole2
+    -fno-schedule-insns2
   )
 else()
   if(NOT (CMAKE_BUILD_TYPE STREQUAL "Debug"))
