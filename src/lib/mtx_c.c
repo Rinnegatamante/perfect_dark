@@ -6,6 +6,7 @@
 #include "types.h"
 
 #ifdef __vita__
+#include <vitasdk.h>
 #include <math_neon.h>
 #endif
 
@@ -158,6 +159,9 @@ void mtx00015be4(Mtxf *arg0, Mtxf *arg1, Mtxf *dst)
 
 void mtx3Copy(f32 src[3][3], f32 dst[3][3])
 {
+#ifdef __vita__
+	sceClibMemcpy(dst, src, sizeof(f32) * 9);
+#else
 	dst[0][0] = src[0][0];
 	dst[0][1] = src[0][1];
 	dst[0][2] = src[0][2];
@@ -169,11 +173,16 @@ void mtx3Copy(f32 src[3][3], f32 dst[3][3])
 	dst[2][0] = src[2][0];
 	dst[2][1] = src[2][1];
 	dst[2][2] = src[2][2];
+#endif
 }
 
 void mtx4Copy(Mtxf *src, Mtxf *dst)
 {
+#ifdef __vita__
+	sceClibMemcpy(dst, src, sizeof(f32) * 16);
+#else
 	*dst = *src;
+#endif
 }
 
 void mtx3ToMtx4(f32 src[3][3], Mtxf *dst)

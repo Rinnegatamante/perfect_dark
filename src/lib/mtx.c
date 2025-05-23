@@ -9,16 +9,27 @@
 #include "data.h"
 #include "types.h"
 
-void mtx00016110(f32 mtx1[3][3], f32 mtx2[3][3])
+#ifdef __vita__
+#include <math_neon.h>
+#endif
+
+void mtx3MultMtx3InPlace(f32 mtx1[3][3], f32 mtx2[3][3])
 {
+#ifdef __vita__
+	matmul3_neon((float *)mtx1, (float *)mtx2, (float *)mtx2);
+#else
 	f32 mtx3[3][3];
 
-	mtx00016140(mtx1, mtx2, mtx3);
+	mtx3MultMtx3(mtx1, mtx2, mtx3);
 	mtx3Copy(mtx3, mtx2);
+#endif
 }
 
-void mtx00016140(f32 mtx1[3][3], f32 mtx2[3][3], f32 dst[3][3])
+void mtx3MultMtx3(f32 mtx1[3][3], f32 mtx2[3][3], f32 dst[3][3])
 {
+#ifdef __vita__
+	matmul3_neon((float *)mtx1, (float *)mtx2, (float *)dst);
+#else
 	s32 i;
 	s32 j;
 
@@ -27,6 +38,7 @@ void mtx00016140(f32 mtx1[3][3], f32 mtx2[3][3], f32 dst[3][3])
 			dst[j][i] = mtx1[0][i] * mtx2[j][0] + mtx1[1][i] * mtx2[j][1] + mtx1[2][i] * mtx2[j][2];
 		}
 	}
+#endif
 }
 
 void mtx000161b0(f32 mtx[3][3], f32 src[3], f32 dest[3])

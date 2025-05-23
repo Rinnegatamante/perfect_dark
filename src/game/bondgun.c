@@ -7333,7 +7333,7 @@ void bgunTickEject(struct hand *hand, struct modeldef *modeldef, bool isdetonato
 		hand->unk0d20.f[1] = newval;
 
 		for (i = 0; i < g_Vars.lvupdate240; i++) {
-			mtx00016110(hand->unk0d50, hand->unk0d2c);
+			mtx3MultMtx3InPlace(hand->unk0d50, hand->unk0d2c);
 		}
 
 		break;

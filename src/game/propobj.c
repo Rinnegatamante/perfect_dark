@@ -5543,7 +5543,7 @@ s32 func0f072144(struct defaultobj *obj, struct coord *arg1, f32 arg2, bool arg3
 
 			mtx4LoadYRotation(arg2, &sp64);
 			mtx4ToMtx3(&sp64, sp40);
-			mtx00016140(sp40, obj->realrot, sp460);
+			mtx3MultMtx3(sp40, obj->realrot, sp460);
 		} else {
 			mtx3Copy(obj->realrot, sp460);
 		}
@@ -8481,7 +8481,7 @@ void fanUpdateModel(struct prop *prop)
 
 	mtx4LoadYRotation(angle, &sp6c);
 	mtx4ToMtx3(&sp6c, sp48);
-	mtx00016140(fan->base.realrot, sp48, sp24);
+	mtx3MultMtx3(fan->base.realrot, sp48, sp24);
 	mtx3Copy(sp24, fan->base.realrot);
 }
 
