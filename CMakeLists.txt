@@ -25,8 +25,8 @@ project(pd C CXX)
 
 if(VITA)
   include("${VITASDK}/share/vita.cmake" REQUIRED)
-  set(VITA_APP_NAME "Project Dark")
-  set(VITA_TITLEID  "PRJCTDARK")
+  set(VITA_APP_NAME "Perfect Dark")
+  set(VITA_TITLEID  "PRFCTDARK")
   set(VITA_VERSION  "01.00")
 endif()
 
@@ -403,5 +403,11 @@ if(VITA)
   vita_create_vpk(${BIN_NAME}.vpk ${VITA_TITLEID} ${BIN_NAME}.self
     VERSION ${VITA_VERSION}
     NAME ${VITA_APP_NAME}
+    FILE ${CMAKE_SOURCE_DIR}/livearea/icon0.png sce_sys/icon0.png
+         ${CMAKE_SOURCE_DIR}/livearea/pic0.png sce_sys/pic0.png
+         ${CMAKE_SOURCE_DIR}/livearea/bg0.png sce_sys/livearea/contents/bg0.png
+         ${CMAKE_SOURCE_DIR}/livearea/joanna.png sce_sys/livearea/contents/joanna.png
+         ${CMAKE_SOURCE_DIR}/livearea/template.xml sce_sys/livearea/contents/template.xml
+         ${CMAKE_SOURCE_DIR}/livearea/mute.png sce_sys/livearea/contents/mute.png
   )
 endif()
