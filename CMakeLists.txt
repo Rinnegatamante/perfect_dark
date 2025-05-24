@@ -409,5 +409,6 @@ if(VITA)
          ${CMAKE_SOURCE_DIR}/livearea/joanna.png sce_sys/livearea/contents/joanna.png
          ${CMAKE_SOURCE_DIR}/livearea/template.xml sce_sys/livearea/contents/template.xml
          ${CMAKE_SOURCE_DIR}/livearea/mute.png sce_sys/livearea/contents/mute.png
+         ${CMAKE_SOURCE_DIR}/livearea/pd.ini pd.ini
   )
 endif()

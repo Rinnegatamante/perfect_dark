@@ -143,6 +143,20 @@ int main(int argc, const char **argv) {
 	} else if (sceIoGetstat("ur0:/data/libshacccg.suprx", &st) < 0 && sceIoGetstat("ur0:/data/external/libshacccg.suprx", &st) < 0) {
 		vita_fatal_error("FATAL ERROR: Runtime shader compiler (libshacccg.suprx) not installed!");
 	}
+	
+	if (sceIoGetstat("ux0:data/pd/pd.ini", &st) < 0) {
+		FILE *f = fopen("app0:pd.ini", "rb");
+		fseek(f, 0, SEEK_END);
+		size_t sz = ftell(f);
+		fseek(f, 0, SEEK_SET);
+		void *buf = malloc(sz);
+		fread(buf, 1, sz, f);
+		fclose(f);
+		f = fopen("ux0:data/pd/pd.ini", "wb");
+		fwrite(buf, 1, sz, f);
+		fclose(f);
+		free(buf);
+	}
 
 	sceAppUtilInit(&(SceAppUtilInitParam){}, &(SceAppUtilBootParam){});
 	SceAppUtilAppEventParam eventParam;
@@ -154,8 +168,6 @@ int main(int argc, const char **argv) {
 		if (strstr(buffer, "no_audio"))
 			strcpy(audio_arg, "--no-sound");
 	}
-	
-	strcpy(audio_arg, "--no-sound");
 	
 	scePowerSetArmClockFrequency(444);
 	scePowerSetBusClockFrequency(222);
