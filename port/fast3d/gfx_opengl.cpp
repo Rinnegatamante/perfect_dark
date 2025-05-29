@@ -931,6 +931,9 @@ static void gfx_opengl_enable_debug(void) {
 }
 
 static bool gfx_opengl_supports_framebuffers(void) {
+#ifdef __vita__
+	return false; // Off for now since there's some issue with glBlitFramebuffer
+#else
     if (GLVersion.major > 2) {
         // GL3.0+ supports everything we need, but we'll still check it for sanity
         return (glad_glFramebufferRenderbuffer && glad_glBlitFramebuffer && glad_glRenderbufferStorageMultisample);
@@ -945,6 +948,7 @@ static bool gfx_opengl_supports_framebuffers(void) {
     }
     // nothing
     return false;
+#endif
 }
 
 static bool gfx_opengl_supports_shaders(void) {
@@ -1185,6 +1189,10 @@ static void gfx_opengl_update_framebuffer_parameters(int fb_id, uint32_t width, 
                                                      bool can_extract_depth) {
     Framebuffer& fb = framebuffers[fb_id];
 
+#ifdef __vita__
+	msaa_level = 1;
+#endif
+
     width = max(width, 1U);
     height = max(height, 1U);
 
@@ -1334,18 +1342,22 @@ void gfx_opengl_copy_framebuffer(int fb_dst, int fb_src, int left, int top, bool
         std::swap(dstY0, dstY1);
     }
 
+#ifndef __vita__
     if (fb_src == 0) {
         // GLES does not support GL_FRONT here
         glReadBuffer((use_back || gl_es) ? GL_BACK : GL_FRONT);
     } else {
         glReadBuffer(GL_COLOR_ATTACHMENT0);
     }
+#endif
 
     glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffers[current_framebuffer].fbo);
 
+#ifndef __vita__
     glReadBuffer(GL_BACK);
+#endif
 
     glEnable(GL_SCISSOR_TEST);
 }
