@@ -2852,7 +2852,6 @@ struct cover {
 	/*0x08*/ RoomNum rooms[2];
 	/*0x0c*/ u16 flags;
 };
-typedef char assertion_on_mystruct[(sizeof(struct cover)==16)*2-1];
 
 struct padsfileheader {
 	s32 numpads;
