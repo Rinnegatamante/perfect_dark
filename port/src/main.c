@@ -135,7 +135,20 @@ void vita_fatal_error(const char *fmt, ...) {
 }
 #endif
 
+#ifdef __vita__
+int pd_main (unsigned int argc, void *argv);
+int main(int argc, char **argv) {
+	// We need a bigger stack to run Perfect Dark, so we create a new thread with a proper stack size
+	SceUID main_thread = sceKernelCreateThread("Perfect Dark", pd_main, 0x40, 0x800000, 0, 0, NULL);
+	if (main_thread >= 0){
+		sceKernelStartThread(main_thread, 0, NULL);
+	}
+	return sceKernelExitDeleteThread(0);
+}
+int pd_main (unsigned int argc, void *argv) {
+#else
 int main(int argc, const char **argv) {
+#endif
 #ifdef __vita__
 	SceIoStat st;
 	if (sceIoGetstat("ux0:data/pd/pd.ntsc-final.z64", &st) < 0) {
