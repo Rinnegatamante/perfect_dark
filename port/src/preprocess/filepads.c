@@ -242,6 +242,12 @@ static u32 convertCover(u8 *dst, u32 dstpos, u8 *src, u32 srcpos, int num_covers
 	return dstpos;
 }
 
+#ifdef __vita__
+#define ALIGN_4(v) (((v) + 3) & ~3)
+#else
+#define ALIGN_4(v)
+#endif
+
 static u32 convertPadsFile(u8 *dst, u8 *src)
 {
 	u32 dstpos = 0;
@@ -256,25 +262,29 @@ static u32 convertPadsFile(u8 *dst, u8 *src)
 	dstpos += sizeof(struct host_header);
 
 	// Pads
-	dstpos = convertPads(dst, dstpos, src, sizeof(struct n64_header), num_pads);
-
+	dstpos = ALIGN_4(convertPads(dst, dstpos, src, sizeof(struct n64_header), num_pads));
+	
 	// Waypoints
 	host_header->ptr_waypoints = (dstpos);
-	dstpos = convertWayPoints(dst, dstpos, src, PD_BE32(n64_header->ptr_waypoints));
+	dstpos = ALIGN_4(convertWayPoints(dst, dstpos, src, PD_BE32(n64_header->ptr_waypoints)));
 
 	// Waygroups
 	host_header->ptr_waygroups = (dstpos);
-	dstpos = convertWayGroups(dst, dstpos, src, PD_BE32(n64_header->ptr_waygroups));
+	dstpos = ALIGN_4(convertWayGroups(dst, dstpos, src, PD_BE32(n64_header->ptr_waygroups)));
 
 	// Cover
 	host_header->ptr_cover = (dstpos);
-	dstpos = convertCover(dst, dstpos, src, PD_BE32(n64_header->ptr_cover), num_covers);
-
+	dstpos = ALIGN_4(convertCover(dst, dstpos, src, PD_BE32(n64_header->ptr_cover), num_covers));
+	
+	
 	return dstpos;
 }
 
 u8* preprocessPadsFile(u8 *data, u32 size, u32 *outSize) {
 	u32 newSizeEstimated = romdataFileGetEstimatedSize(size, LOADTYPE_PADS);
+#ifdef __vita__
+	newSizeEstimated += 128;
+#endif
 	u8* dst = sysMemZeroAlloc(newSizeEstimated);
 
 	u32 newSize = convertPadsFile(dst, data);

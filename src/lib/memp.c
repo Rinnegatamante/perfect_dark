@@ -169,6 +169,11 @@ void *mempGetNextStageAllocation(void)
 void *mempAllocFromBank(struct memorypool *pool, u32 size, u8 poolnum)
 {
 	u8 *allocation;
+	
+#ifdef __vita__
+	// Align to 8 bytes
+	size = ((size + 0x07) & ~(size_t)0x07);
+#endif
 
 	pool += poolnum;
 
@@ -190,8 +195,6 @@ void *mempAllocFromBank(struct memorypool *pool, u32 size, u8 poolnum)
 
 	pool->leftpos += size;
 	pool->prevallocation = allocation;
-
-	if (1);
 
 	return (void *)allocation;
 }
@@ -251,6 +254,11 @@ s32 mempRealloc(void *allocation, s32 newsize, u8 poolnum)
 	struct memorypool *pool = &g_MempOnboardPools[poolnum];
 	s32 origsize;
 	s32 growsize;
+
+#ifdef __vita__
+	// Align to 8 bytes
+	newsize = ((newsize + 0x07) & ~(size_t)0x07);
+#endif
 
 	if (pool->prevallocation != allocation) {
 		pool = &g_MempExpansionPools[poolnum];

@@ -5,6 +5,10 @@
 #include "data.h"
 #include "types.h"
 
+#ifdef __vita__
+#include <vitasdk.h>
+#endif
+
 struct padsfileheader *g_PadsFile;
 u16 *g_PadOffsets;
 u32 var800a2358;
@@ -21,8 +25,6 @@ void padUnpack(s32 padnum, u32 fields, struct pad *pad)
 	u32 *header;
 	f32 *fbuffer;
 	u8 *ptr;
-
-	if (pad);
 
 	offset = g_PadOffsets[padnum];
 	ptr = (u8 *) &g_StageSetup.padfiledata[offset];
@@ -79,9 +81,13 @@ void padUnpack(s32 padnum, u32 fields, struct pad *pad)
 	} else {
 		if (fields & (PADFIELD_UP | PADFIELD_NORMAL)) {
 			fbuffer = (f32 *) ptr;
+#ifdef __vita__
+			sceClibMemcpy(&pad->up.x, fbuffer, sizeof(float) * 3);
+#else
 			pad->up.x = fbuffer[0];
 			pad->up.y = fbuffer[1];
 			pad->up.z = fbuffer[2];
+#endif
 		}
 		ptr += 12;
 	}
@@ -105,9 +111,13 @@ void padUnpack(s32 padnum, u32 fields, struct pad *pad)
 	} else {
 		if (fields & (PADFIELD_LOOK | PADFIELD_NORMAL)) {
 			fbuffer = (f32 *) ptr;
+#ifdef __vita__
+			sceClibMemcpy(&pad->look.x, fbuffer, sizeof(float) * 3);
+#else
 			pad->look.x = fbuffer[0];
 			pad->look.y = fbuffer[1];
 			pad->look.z = fbuffer[2];
+#endif
 		}
 		ptr += 12;
 	}
@@ -121,12 +131,16 @@ void padUnpack(s32 padnum, u32 fields, struct pad *pad)
 	if ((*header >> 14) & PADFLAG_HASBBOXDATA) {
 		if (fields & PADFIELD_BBOX) {
 			fbuffer = (f32 *) ptr;
+#ifdef __vita__
+			sceClibMemcpy(&pad->bbox.xmin, fbuffer, sizeof(float) * 6);
+#else
 			pad->bbox.xmin = fbuffer[0];
 			pad->bbox.xmax = fbuffer[1];
 			pad->bbox.ymin = fbuffer[2];
 			pad->bbox.ymax = fbuffer[3];
 			pad->bbox.zmin = fbuffer[4];
 			pad->bbox.zmax = fbuffer[5];
+#endif
 		}
 		ptr += 4 * 6;
 	} else {
