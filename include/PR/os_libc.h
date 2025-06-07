@@ -88,10 +88,15 @@ extern "C" {
 
 /* byte string operations */
 
-#ifndef PLATFORM_OSX
+#if !defined(PLATFORM_OSX) && !defined(__vita__)
 extern void     bcopy(const void *, void *, size_t);
 extern int      bcmp(const void *, const void *, size_t);
 extern void     bzero(void *, size_t);
+#elif defined(__vita__)
+#include <vitasdk.h>
+#define bcopy(src, dst, n) sceClibMemcpy(dst, src, n)
+#define bcmp sceClibMemcmp
+#define bzero(ptr, size) sceClibMemset(ptr, 0, size)
 #endif
 
 /* Printf */

@@ -467,7 +467,7 @@ OSIntMask osSetIntMask(OSIntMask mask)
 
 /* libc compatibility wrappers */
 
-#ifndef PLATFORM_OSX
+#if !defined(PLATFORM_OSX) && !defined(__vita__)
 
 void bzero(void *ptr, size_t size)
 {

@@ -146,6 +146,7 @@ void dmaWait(void)
 #endif
 }
 
+#ifndef __vita__
 void dmaExec(void *memaddr, romptr_t romaddr, u32 len)
 {
 	dmaStart(memaddr, romaddr, len, false);
@@ -163,6 +164,7 @@ void dmaExecHighPriority(void *memaddr, romptr_t romaddr, u32 len)
 	dmaCheckPiracy(memaddr, len);
 #endif
 }
+#endif
 
 /**
  * DMA data from ROM to RAM with automatic alignment.

@@ -138,6 +138,7 @@ void vita_fatal_error(const char *fmt, ...) {
 #ifdef __vita__
 int pd_main (unsigned int argc, void *argv);
 int main(int argc, char **argv) {
+	sceSysmoduleLoadModule(SCE_SYSMODULE_RAZOR_CAPTURE);
 	// We need a bigger stack to run Perfect Dark, so we create a new thread with a proper stack size
 	SceUID main_thread = sceKernelCreateThread("Perfect Dark", pd_main, 0x40, 0x800000, 0, 0, NULL);
 	if (main_thread >= 0){
