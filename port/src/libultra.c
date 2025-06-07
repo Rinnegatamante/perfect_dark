@@ -434,11 +434,13 @@ void osInvalDCache(void *a, s32 b)
 
 }
 
+#ifndef __vita__
 s32 osPiStartDma(OSIoMesg *mb, s32 priority, s32 direction, uintptr_t devAddr, void *vAddr, u32 nbytes, OSMesgQueue *mq)
 {
 	memcpy(vAddr, (const void *)devAddr, nbytes);
 	return 0;
 }
+#endif
 
 s32 osPiReadIo(u32 devaddr, u32 *data)
 {

@@ -198,8 +198,12 @@ extern u32 		osPiGetStatus(void);
 extern s32		osPiGetDeviceType(void);
 extern s32		osPiWriteIo(u32, u32);
 extern s32		osPiReadIo(u32, u32 *);
-extern s32		osPiStartDma(OSIoMesg *, s32, s32, uintptr_t, void *, u32,
-				     OSMesgQueue *);
+#ifdef __vita__
+#include <vitasdk.h>
+#define osPiStartDma(mb, prio, dir, src, dst, size, queue) sceClibMemcpy(dst, src, size)
+#else
+extern s32		osPiStartDma(OSIoMesg *, s32, s32, uintptr_t, void *, u32, OSMesgQueue *);
+#endif
 extern void		osCreatePiManager(OSPri, OSMesgQueue *, OSMesg *, s32);
 
 /* Enhanced PI interface */
