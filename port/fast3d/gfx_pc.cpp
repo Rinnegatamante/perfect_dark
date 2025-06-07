@@ -23,6 +23,7 @@ extern "C" {
     void normalize3_neon(float v[3], float d[3]);
     void matmul4_neon(float m0[16], float m1[16], float d[16]);
 };
+#include <vitasdk.h>
 #endif
 
 #ifndef _LANGUAGE_C
@@ -533,7 +534,15 @@ void gfx_texture_cache_clear() {
 }
 
 static bool gfx_texture_cache_lookup(int i, const TextureCacheKey& key) {
-    TextureCacheMap::iterator it = gfx_texture_cache.map.find(key);
+#ifndef __vita__
+	TextureCacheMap::iterator it = gfx_texture_cache.map.find(key);
+#else
+    TextureCacheMap::iterator it;
+	for (it = gfx_texture_cache.map.begin(); it != gfx_texture_cache.map.end(); it++) {
+		if (!sceClibMemcmp(&it->first, &key, sizeof(TextureCacheKey)))
+			break;
+	}
+#endif
     TextureCacheNode** n = &rendering_state.textures[i];
 
     if (it != gfx_texture_cache.map.end()) {
