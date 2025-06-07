@@ -535,7 +535,7 @@ void gfx_texture_cache_clear() {
 
 static bool gfx_texture_cache_lookup(int i, const TextureCacheKey& key) {
 #ifndef __vita__
-	TextureCacheMap::iterator it = gfx_texture_cache.map.find(key);
+    TextureCacheMap::iterator it = gfx_texture_cache.map.find(key);
 #else
     TextureCacheMap::iterator it;
 	for (it = gfx_texture_cache.map.begin(); it != gfx_texture_cache.map.end(); it++) {

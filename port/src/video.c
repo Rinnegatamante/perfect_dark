@@ -28,7 +28,7 @@
 #ifdef __vita__
 #include <vitasdk.h>
 //#define STATIC_FRAMESKIP
-#define AUTO_FRAMESKIP
+//#define AUTO_FRAMESKIP
 #endif
 
 #define AUTO_FRAMESKIP_TARGET (16667)
