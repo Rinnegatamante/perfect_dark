@@ -13,10 +13,6 @@
 #define false 0
 #define true  1
 
-#ifdef __vita__
-#define DISABLE_ARTIFACTS
-#endif
-
 #ifdef DISABLE_ARTIFACTS
 #define MAX_ARTIFACTS          0
 #else
