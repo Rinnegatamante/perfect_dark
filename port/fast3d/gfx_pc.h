@@ -28,12 +28,20 @@ struct TextureCacheKey {
 
     bool operator==(const TextureCacheKey&) const noexcept = default;
 
+#ifdef __vita__
+    struct Hasher {
+        size_t operator()(const TextureCacheKey& key) const noexcept {
+            return (size_t)key.texture_addr;
+        }
+    };
+#else
     struct Hasher {
         size_t operator()(const TextureCacheKey& key) const noexcept {
             uintptr_t addr = (uintptr_t)key.texture_addr;
             return (size_t)(addr ^ (addr >> 5));
         }
     };
+#endif
 };
 
 typedef std::unordered_map<TextureCacheKey, struct TextureCacheValue, TextureCacheKey::Hasher> TextureCacheMap;
