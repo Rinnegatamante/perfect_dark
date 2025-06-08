@@ -538,10 +538,14 @@ static bool gfx_texture_cache_lookup(int i, const TextureCacheKey& key) {
     TextureCacheMap::iterator it = gfx_texture_cache.map.find(key);
 #else
     TextureCacheMap::iterator it;
-	for (it = gfx_texture_cache.map.begin(); it != gfx_texture_cache.map.end(); it++) {
-		if (!sceClibMemcmp(&it->first, &key, sizeof(TextureCacheKey)))
-			break;
-	}
+    for (it = gfx_texture_cache.map.begin(); it != gfx_texture_cache.map.end(); it++) {
+        if (key.texture_addr == it->first.texture_addr) {
+            if (sceClibMemcmp(&it->first, &key, sizeof(TextureCacheKey))) {
+                it = gfx_texture_cache.map.end();
+            }
+            break;
+        }
+    }
 #endif
     TextureCacheNode** n = &rendering_state.textures[i];
 
