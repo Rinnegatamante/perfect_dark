@@ -8,6 +8,10 @@
 #include <list>
 #include <cstddef>
 
+#ifdef __vita__
+#include <vitasdk.h>
+#endif
+
 #include <PR/gbi.h>
 
 #include "system.h"
@@ -26,15 +30,19 @@ struct TextureCacheKey {
     uint8_t fmt, siz;
     uint8_t palette_index;
 
-    bool operator==(const TextureCacheKey&) const noexcept = default;
-
 #ifdef __vita__
+    bool operator==(const TextureCacheKey& rhs) const {
+        return !sceClibMemcmp(&rhs, this, sizeof(TextureCacheKey));
+    };
+	
     struct Hasher {
         size_t operator()(const TextureCacheKey& key) const noexcept {
             return (size_t)key.texture_addr;
         }
     };
 #else
+	bool operator==(const TextureCacheKey&) const noexcept = default;
+
     struct Hasher {
         size_t operator()(const TextureCacheKey& key) const noexcept {
             uintptr_t addr = (uintptr_t)key.texture_addr;
