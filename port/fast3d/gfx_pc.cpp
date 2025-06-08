@@ -539,10 +539,7 @@ static bool gfx_texture_cache_lookup(int i, const TextureCacheKey& key) {
 #else
     TextureCacheMap::iterator it;
     for (it = gfx_texture_cache.map.begin(); it != gfx_texture_cache.map.end(); it++) {
-        if (key.texture_addr == it->first.texture_addr) {
-            if (sceClibMemcmp(&it->first, &key, sizeof(TextureCacheKey))) {
-                it = gfx_texture_cache.map.end();
-            }
+        if (key.texture_addr == it->first.texture_addr && !sceClibMemcmp(&it->first, &key, sizeof(TextureCacheKey))) {
             break;
         }
     }
