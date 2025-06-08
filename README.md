@@ -198,12 +198,9 @@ Controls can be rebound in `pd.ini`. Default control scheme is as follows:
    `make HAVE_GLSL_SUPPORT=1 CIRCULAR_VERTEX_POOL=2 USE_SCRATCH_MEMORY=1 NO_DEBUG=1 DRAW_SPEEDHACK=1 install`
 3. Get the source code:  
    `git clone --recursive https://github.com/fgsfdsfgs/perfect_dark.git && cd perfect_dark`
-4. Configure:
-   * Execute command: `cmake -G "Unix Makefiles" -DVITA=1 -Bbuild .`
-   * Add ` -DROMID=pal-final` or ` -DROMID=jpn-final` at the end of the command if you want to build a PAL or JPN executable respectively.
 7. Build:
-   * Execute command: `make -C build -j4`
-8. The resulting executable will be at `build/pd.armv7.vpk`.
+   * Execute the script: `build_vita.bat`
+8. The resulting executable will be at `vita_release/vpk/pd.armv7.vpk`.
 
 ### Notes
 

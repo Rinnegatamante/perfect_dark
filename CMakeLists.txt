@@ -30,6 +30,7 @@ if(VITA)
   set(VITA_VERSION  "01.00")
 endif()
 
+if(NOT LAUNCHER)
 include(TargetArch)
 include(FindPkgConfig)
 include(AssetUtils)
@@ -399,8 +400,11 @@ endif()
 
 if(VITA)
   vita_create_self(${BIN_NAME}.self pd UNSAFE)
+endif()
+
+else() # Launcher
   set(VITA_MKSFOEX_FLAGS "-d ATTRIBUTE2=12")
-  vita_create_vpk(${BIN_NAME}.vpk ${VITA_TITLEID} ${BIN_NAME}.self
+  vita_create_vpk(pd.armv7.vpk ${VITA_TITLEID} ${CMAKE_SOURCE_DIR}/vita_release/ntsc/pd.armv7.self
     VERSION ${VITA_VERSION}
     NAME ${VITA_APP_NAME}
     FILE ${CMAKE_SOURCE_DIR}/livearea/icon0.png sce_sys/icon0.png
@@ -408,7 +412,8 @@ if(VITA)
          ${CMAKE_SOURCE_DIR}/livearea/bg0.png sce_sys/livearea/contents/bg0.png
          ${CMAKE_SOURCE_DIR}/livearea/joanna.png sce_sys/livearea/contents/joanna.png
          ${CMAKE_SOURCE_DIR}/livearea/template.xml sce_sys/livearea/contents/template.xml
-         ${CMAKE_SOURCE_DIR}/livearea/mute.png sce_sys/livearea/contents/mute.png
          ${CMAKE_SOURCE_DIR}/livearea/pd.ini pd.ini
+         ${CMAKE_SOURCE_DIR}/vita_release/jap/pd.jpn.armv7.self jap.self
+         ${CMAKE_SOURCE_DIR}/vita_release/pal/pd.pal.armv7.self pal.self
   )
 endif()

@@ -8,12 +8,5 @@
 	<gate>
 		<startup-image>joanna.png</startup-image>
 	</gate>
-
-	<frame id="frame3">
-		<liveitem>
-			<target>psla:no_audio</target>
-			<image>mute.png</image>
-		</liveitem>
-	</frame>	
 	
 </livearea>

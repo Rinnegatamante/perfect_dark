@@ -152,12 +152,24 @@ int main(int argc, const char **argv) {
 #endif
 #ifdef __vita__
 	SceIoStat st;
-	if (sceIoGetstat("ux0:data/pd/pd.ntsc-final.z64", &st) < 0) {
-		vita_fatal_error("FATAL ERROR: ux0:data/pd/pd.ntsc-final.z64 not found!");
-	} else if (sceIoGetstat("ur0:/data/libshacccg.suprx", &st) < 0 && sceIoGetstat("ur0:/data/external/libshacccg.suprx", &st) < 0) {
+	if (sceIoGetstat("ur0:/data/libshacccg.suprx", &st) < 0 && sceIoGetstat("ur0:/data/external/libshacccg.suprx", &st) < 0) {
 		vita_fatal_error("FATAL ERROR: Runtime shader compiler (libshacccg.suprx) not installed!");
 	}
-	
+
+#if VERSION == VERSION_NTSC_FINAL
+	if (sceIoGetstat("ux0:data/pd/pd.ntsc-final.z64", &st) < 0) {
+		if (sceIoGetstat("ux0:data/pd/pd.pal-final.z64", &st) < 0) {
+			if (sceIoGetstat("ux0:data/pd/pd.jpn-final.z64", &st) < 0) {
+				vita_fatal_error("FATAL ERROR: No compatible rom detected!");
+			} else {
+				sceAppMgrLoadExec("app0:jap.self", NULL, NULL);
+			}
+		} else {
+			sceAppMgrLoadExec("app0:pal.self", NULL, NULL);
+		}
+	}
+#endif
+
 	if (sceIoGetstat("ux0:data/pd/pd.ini", &st) < 0) {
 		FILE *f = fopen("app0:pd.ini", "rb");
 		fseek(f, 0, SEEK_END);
@@ -171,23 +183,12 @@ int main(int argc, const char **argv) {
 		fclose(f);
 		free(buf);
 	}
-
-	sceAppUtilInit(&(SceAppUtilInitParam){}, &(SceAppUtilBootParam){});
-	SceAppUtilAppEventParam eventParam;
-	sceClibMemset(&eventParam, 0, sizeof(SceAppUtilAppEventParam));
-	sceAppUtilReceiveAppEvent(&eventParam);
-	if (eventParam.type == 0x05) {
-		char buffer[2048];
-		sceAppUtilAppEventParseLiveArea(&eventParam, buffer);
-		if (strstr(buffer, "no_audio"))
-			strcpy(audio_arg, "--no-sound");
-	}
 	
 	scePowerSetArmClockFrequency(444);
 	scePowerSetBusClockFrequency(222);
 	scePowerSetGpuClockFrequency(222);
 	scePowerSetGpuXbarClockFrequency(166);
-	const char *vita_args[9] = {
+	const char *vita_args[8] = {
 		"ux0:data/pd",
 		"--basedir",
 		"ux0:data/pd",
@@ -195,10 +196,9 @@ int main(int argc, const char **argv) {
 		"ux0:data/pd",
 		"--savedir",
 		"",
-		audio_arg,
 		0
 	};
-	sysInitArgs(8, vita_args);
+	sysInitArgs(7, vita_args);
 #else	
 	sysInitArgs(argc, argv);
 #endif
