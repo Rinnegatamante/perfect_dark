@@ -31,6 +31,33 @@
 #include "data.h"
 #include "types.h"
 
+#ifdef __vita__
+#include "../../vita/trophies.h"
+
+enum {
+	TRP_THE_CHOSEN_ONE = 35,
+	TRP_MARQUIS_OF_QUEENSBURY_RULES = 36,
+	TRP_THE_PUGILIST = 37,
+	TRP_HURRICANE_FISTS = 38,
+	TRP_HIT_AND_RUN = 39,
+	TRP_PSYCHOSIS_GUN = 40,
+	TRP_CLOAKING_DEVICE = 41,
+	TRP_BRING_IT_ON = 42,
+	TRP_HOTSHOT = 43,
+	TRP_ELVIS = 44,
+	TRP_INVINCIBLE = 45,
+	TRP_UNLIMITED_AMMO_NO_RELOADS = 46,
+	TRP_UNLIMITED_AMMO_LAPTOP_SENTRY_GUN = 47,
+	TRP_TRENT_MAGNUM = 48,
+	TRP_UNLIMITED_AMMO = 49,
+	TRP_MAKE_EVERY_SHOT_COUNT = 50,
+	TRP_FARSIGHT = 51,
+	TRP_SUPER_SHIELD = 52,
+	TRP_ALIEN = 53,
+	TRP_ALL_GUNS_IN_SOLO = 54
+};
+#endif
+
 MenuItemHandlerResult endscreenHandleDeclineMission(s32 operation, struct menuitem *item, union handlerdata *data)
 {
 	if (operation == MENUOP_SET) {
@@ -1633,6 +1660,139 @@ void endscreenPrepare(void)
 		lvSetPaused(true);
 		g_Vars.currentplayer->pausemode = PAUSEMODE_PAUSED;
 	}
+	
+#ifdef __vita__
+	// Generic mission completion trophies unlock
+	if (g_MissionConfig.difficulty != DIFF_PD && g_MissionConfig.difficulty != DIFF_A && g_MissionConfig.stageindex <= SOLOSTAGEINDEX_SKEDARRUINS) {
+		trophies_unlock(g_MissionConfig.stageindex * 2 + g_MissionConfig.difficulty);
+	}
+	
+	s32 kills_num = mpstatsGetPlayerKillCount();
+	s32 total = mpstatsGetPlayerShotCountByRegion(SHOTREGION_TOTAL);
+	s32 numhead = mpstatsGetPlayerShotCountByRegion(SHOTREGION_HEAD);
+	s32 numbody = mpstatsGetPlayerShotCountByRegion(SHOTREGION_BODY);
+	s32 numlimb = mpstatsGetPlayerShotCountByRegion(SHOTREGION_LIMB);
+	s32 numgun = mpstatsGetPlayerShotCountByRegion(SHOTREGION_GUN);
+	s32 numhat = mpstatsGetPlayerShotCountByRegion(SHOTREGION_HAT);
+	s32 numobject = mpstatsGetPlayerShotCountByRegion(SHOTREGION_OBJECT);
+	f32 accuracy;
+
+	if (total > 0) {
+		s32 hits = numhead + numbody + numlimb + numgun + numhat + numobject;
+		accuracy = hits * 100.0f / total;
+	} else {
+		accuracy = 0;
+	}
+
+	if (accuracy > 100.0f) {
+		accuracy = 100.0f;
+	}
+
+	// Custom per-mission trophies
+	switch (g_MissionConfig.stageindex) {
+	case SOLOSTAGEINDEX_DEFECTION:
+		if (g_MissionConfig.difficulty == DIFF_A && kills_num >= 15 && secs <= 90) {
+			trophies_unlock(TRP_THE_CHOSEN_ONE);
+		} else if (g_MissionConfig.difficulty == DIFF_SA && secs <= 90) {
+			trophies_unlock(TRP_MARQUIS_OF_QUEENSBURY_RULES);
+		}
+		break;
+	case SOLOSTAGEINDEX_INVESTIGATION:
+		if (g_MissionConfig.difficulty == DIFF_PA && secs <= 330) {
+			trophies_unlock(TRP_THE_PUGILIST);
+		}
+		break;
+	case SOLOSTAGEINDEX_EXTRACTION:
+		if (g_MissionConfig.difficulty == DIFF_A && secs <= 123) {
+			trophies_unlock(TRP_HURRICANE_FISTS);
+		}
+		break;
+	case SOLOSTAGEINDEX_VILLA:
+		if (g_MissionConfig.difficulty == DIFF_SA && secs <= 150) {
+			trophies_unlock(TRP_HIT_AND_RUN);
+		}
+		break;
+	case SOLOSTAGEINDEX_CHICAGO:
+		if (g_MissionConfig.difficulty == DIFF_PA && secs <= 120) {
+			trophies_unlock(TRP_PSYCHOSIS_GUN);
+		}
+		break;
+	case SOLOSTAGEINDEX_G5BUILDING:
+		if (g_MissionConfig.difficulty == DIFF_A && secs <= 100) {
+			trophies_unlock(TRP_CLOAKING_DEVICE);
+		} else if (g_MissionConfig.difficulty == DIFF_PA && kills_num >= 70) {
+			trophies_unlock(TRP_BRING_IT_ON);
+		}
+		break;
+	case SOLOSTAGEINDEX_INFILTRATION:
+		if (g_MissionConfig.difficulty == DIFF_SA && secs <= 300) {
+			trophies_unlock(TRP_HOTSHOT);
+		}
+		break;
+	case SOLOSTAGEINDEX_RESCUE:
+		if (g_MissionConfig.difficulty == DIFF_PA && secs <= 479) {
+			trophies_unlock(TRP_ELVIS);
+		}
+		break;
+	case SOLOSTAGEINDEX_ESCAPE:
+		if (g_MissionConfig.difficulty == DIFF_A && secs <= 230) {
+			trophies_unlock(TRP_INVINCIBLE);
+		}
+		break;
+	case SOLOSTAGEINDEX_AIRBASE:
+		if (g_MissionConfig.difficulty == DIFF_SA && secs <= 191) {
+			trophies_unlock(TRP_UNLIMITED_AMMO_NO_RELOADS);
+		}
+		break;
+	case SOLOSTAGEINDEX_AIRFORCEONE:
+		if (g_MissionConfig.difficulty == DIFF_PA && secs <= 235) {
+			trophies_unlock(TRP_UNLIMITED_AMMO_LAPTOP_SENTRY_GUN);
+		}
+		break;
+	case SOLOSTAGEINDEX_CRASHSITE:
+		if (g_MissionConfig.difficulty == DIFF_A && secs <= 170) {
+			trophies_unlock(TRP_TRENT_MAGNUM);
+		}
+		break;
+	case SOLOSTAGEINDEX_PELAGIC:
+		if (g_MissionConfig.difficulty == DIFF_SA && secs <= 427) {
+			trophies_unlock(TRP_UNLIMITED_AMMO);
+		} else if (g_MissionConfig.difficulty == DIFF_PA && accuracy >= 85.0f) {
+			trophies_unlock(TRP_MAKE_EVERY_SHOT_COUNT);
+		}
+		break;
+	case SOLOSTAGEINDEX_DEEPSEA:
+		if (g_MissionConfig.difficulty == DIFF_PA && secs <= 447) {
+			trophies_unlock(TRP_FARSIGHT);
+		}
+		break;
+	case SOLOSTAGEINDEX_DEFENSE:
+		if (g_MissionConfig.difficulty == DIFF_A && secs <= 105) {
+			trophies_unlock(TRP_SUPER_SHIELD);
+		}
+		break;
+	case SOLOSTAGEINDEX_ATTACKSHIP:
+		if (g_MissionConfig.difficulty == DIFF_SA && secs <= 437) {
+			trophies_unlock(TRP_ALIEN);
+		}
+		break;
+	case SOLOSTAGEINDEX_SKEDARRUINS:
+		if (g_MissionConfig.difficulty == DIFF_PA && secs <= 331) {
+			trophies_unlock(TRP_ALL_GUNS_IN_SOLO);
+		}
+		break;
+	case SOLOSTAGEINDEX_MBR:
+		break;
+	case SOLOSTAGEINDEX_MAIANSOS:
+		break;
+	case SOLOSTAGEINDEX_WAR:
+		break;
+	case SOLOSTAGEINDEX_DUEL:
+		break;
+	default:
+		break;
+	}
+#endif
 }
 
 struct menudialogdef g_2PMissionEndscreenCompletedHMenuDialog = {

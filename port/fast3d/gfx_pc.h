@@ -34,14 +34,14 @@ struct TextureCacheKey {
     bool operator==(const TextureCacheKey& rhs) const {
         return !sceClibMemcmp(&rhs, this, sizeof(TextureCacheKey));
     };
-	
+
     struct Hasher {
         size_t operator()(const TextureCacheKey& key) const noexcept {
             return (size_t)key.texture_addr;
         }
     };
 #else
-	bool operator==(const TextureCacheKey&) const noexcept = default;
+    bool operator==(const TextureCacheKey&) const noexcept = default;
 
     struct Hasher {
         size_t operator()(const TextureCacheKey& key) const noexcept {

@@ -285,7 +285,7 @@ if(NOT EXTRA_LIBRARIES)
   elseif(NINTENDO_SWITCH)
     set(EXTRA_LIBRARIES stdc++ pthread)
   elseif(VITA)
-    set(EXTRA_LIBRARIES stdc++ pthread SceAppUtil_stub SceMotion_stub SceCtrl_stub SceTouch_stub SceHid_stub SceIme_stub SceCommonDialog_stub SceLibKernel_stub SceKernelDmacMgr_stub SceAudioIn_stub SceAudio_stub SceSysmodule_stub ScePower_stub)
+    set(EXTRA_LIBRARIES stdc++ pthread SceAppUtil_stub SceMotion_stub SceCtrl_stub SceTouch_stub SceHid_stub SceIme_stub SceCommonDialog_stub SceLibKernel_stub SceKernelDmacMgr_stub SceAudioIn_stub SceAudio_stub SceSysmodule_stub SceNpTrophy_stub ScePower_stub)
   else()
     set(EXTRA_LIBRARIES stdc++ m dl)
   endif()
@@ -349,6 +349,23 @@ set(SRC_LIB
 )
 list(PREPEND SRC_LIB "${CMAKE_SOURCE_DIR}")
 
+if (VITA)
+set(SRC_VITA
+  vita/trophies.c
+)
+
+set(SRC
+  ${SRC_GAME}
+  ${SRC_PORT}
+  ${SRC_PORT_CXX}
+  ${SRC_LIB_MP3}
+  ${SRC_LIB_NAUDIO}
+  ${SRC_LIB_ULTRA_AUDIO}
+  ${SRC_LIB_GU}
+  ${SRC_LIB}
+  ${SRC_VITA}
+)
+else()
 set(SRC
   ${SRC_GAME}
   ${SRC_PORT}
@@ -359,6 +376,7 @@ set(SRC
   ${SRC_LIB_GU}
   ${SRC_LIB}
 )
+endif()
 
 if(WIN32)
   list(APPEND SRC "${CMAKE_SOURCE_DIR}/dist/windows/icon.rc")
@@ -415,5 +433,6 @@ else() # Launcher
          ${CMAKE_SOURCE_DIR}/livearea/pd.ini pd.ini
          ${CMAKE_SOURCE_DIR}/vita_release/jap/pd.jpn.armv7.self jap.self
          ${CMAKE_SOURCE_DIR}/vita_release/pal/pd.pal.armv7.self pal.self
+         ${CMAKE_SOURCE_DIR}/livearea/TROPHY.TRP sce_sys/trophy/PDRK00001_00/TROPHY.TRP
   )
 endif()

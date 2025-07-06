@@ -6,8 +6,38 @@
 #ifdef __vita__
 #include <vitasdk.h>
 #include <vitaGL.h>
+#include "../../vita/trophies.h"
 extern float *buf_vbo_ptr;
 extern float *buf_vbo;
+
+void vita_warning(const char *fmt, ...) {
+	va_list list;
+	char string[512];
+
+	va_start(list, fmt);
+	vsnprintf(string, sizeof(string), fmt, list);
+	va_end(list);
+
+	vglInit(0);
+
+	SceMsgDialogUserMessageParam msg_param;
+	memset(&msg_param, 0, sizeof(msg_param));
+	msg_param.buttonType = SCE_MSG_DIALOG_BUTTON_TYPE_OK;
+	msg_param.msg = (SceChar8 *)string;
+
+	SceMsgDialogParam param;
+	sceMsgDialogParamInit(&param);
+	_sceCommonDialogSetMagicNumber(&param.commonParam);
+	param.mode = SCE_MSG_DIALOG_MODE_USER_MSG;
+	param.userMsgParam = &msg_param;
+
+	sceMsgDialogInit(&param);
+
+	while (sceMsgDialogGetStatus() != SCE_COMMON_DIALOG_STATUS_FINISHED)
+		vglSwapBuffers(GL_TRUE);
+	
+	sceMsgDialogTerm();
+}
 #endif
 
 #include "platform.h"
@@ -107,6 +137,14 @@ static void gfx_sdl_init(const struct GfxWindowInitSettings *set) {
 	vglInitExtended(0, 960, 544, 8 * 1024 * 1024, SCE_GXM_MULTISAMPLE_4X);
 	buf_vbo_ptr = (float *)vglAlloc(32 * 1024 * 1024, VGL_MEM_RAM);
 	buf_vbo = buf_vbo_ptr;
+	
+	int r = trophies_init();
+	SceIoStat st;
+	if (r < 0 && sceIoGetstat("ux0:data/pd/trophies.chk", &st) < 0) {
+		FILE *f = fopen("ux0:data/pd/trophies.chk", "w");
+		fclose(f);
+		vita_warning("This game features unlockable trophies but NoTrpDrm is not installed. If you want to be able to unlock trophies, please install it.");
+	}
 #endif
 
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
