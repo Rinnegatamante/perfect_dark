@@ -2533,7 +2533,13 @@ f32 skyGetArtifactGroupIntensityFrac(struct artifact *artifacts)
 	s32 i;
 
 	for (i = 0; i < 8; i++) {
-		if (artifacts[i].type == ARTIFACTTYPE_CIRCLE && artifacts[i].actualdepth == 0xfffc) {
+		const u16 test =
+#ifdef PLATFORM_N64
+			artifacts[i].actualdepth;
+#else
+			artifacts[i].visiblelos;
+#endif
+		if (artifacts[i].type == ARTIFACTTYPE_CIRCLE && test == 0xfffc) {
 			sum += 0.125f;
 		}
 	}
