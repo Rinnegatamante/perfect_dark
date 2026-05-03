@@ -26,7 +26,7 @@ extern "C" {
     SceGxmTexture *vglGetGxmTexture(GLenum target);
     void vglBufferData(GLenum target, const GLvoid *data);
 };
-#define SHADER_MAGIC (2)
+#define SHADER_MAGIC (2) // Sync in gfx_sdl2.cpp
 #endif
 
 using namespace std;

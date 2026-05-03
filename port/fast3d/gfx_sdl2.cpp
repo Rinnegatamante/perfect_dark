@@ -4,6 +4,7 @@
 #include <time.h>
 
 #ifdef __vita__
+#define SHADER_MAGIC (2) // Sync in gfx_opengl.cpp
 #include <vitasdk.h>
 #include <vitaGL.h>
 #include "../../vita/trophies.h"
@@ -130,7 +131,34 @@ static void gfx_sdl_init(const struct GfxWindowInitSettings *set) {
 #endif
 
 #ifdef __vita__
-	sceIoMkdir("ux0:data/pd/shader_cache", 0777);
+	if (sceIoMkdir("ux0:data/pd/shader_cache", 0777) < 0) {
+		FILE *f = fopen("ux0:data/pd/cache.chk", "rb");
+		if (f) {
+			char shader_ver;
+			fread(&shader_ver, 1, 1, f);
+			fclose(f);
+			int magic = shader_ver - '0';
+			if (magic != SHADER_MAGIC) {
+				goto clean_shader_cache;
+			}
+		} else {
+clean_shader_cache:
+			SceIoDirent g_dir;
+			char sign = (char)(SHADER_MAGIC + '0');
+			SceUID fd = sceIoDopen("ux0:data/pd/shader_cache");
+			while (sceIoDread(fd, &g_dir) > 0) {
+				if (g_dir.d_name[strlen(g_dir.d_name) - 5] != sign) {
+					char fname[256];
+					sprintf(fname, "ux0:data/pd/shader_cache/%s", g_dir.d_name);
+					sceIoRemove(fname);
+				}
+			}
+			FILE *f = fopen("ux0:data/pd/cache.chk", "wb");
+			fwrite(&sign, 1, 1, f);
+			fclose(f);
+			sceIoDclose(fd);
+		}
+	}
 	vglSetupDisplayRenderTarget(3);
 	vglInitExtended(0, 960, 544, 8 * 1024 * 1024, SCE_GXM_MULTISAMPLE_4X);
 	buf_vbo = (float *)vglAllocFromScratch(10 * 1024 * 1024);
