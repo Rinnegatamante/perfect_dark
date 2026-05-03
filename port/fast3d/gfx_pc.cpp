@@ -650,7 +650,7 @@ static void import_texture_rgba16(int tile, const LoadedTexture& loaded_texture,
     const uint32_t width = rdp.texture_tile[tile].line_size_bytes / 2;
     const uint32_t height = size_bytes / rdp.texture_tile[tile].line_size_bytes;
 
-	gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
+    gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
     // DumpTexture(loaded_texture.otr_path, rgba32_buf, width, height);
 }
 
@@ -671,7 +671,7 @@ static void import_texture_rgba32(int tile, const LoadedTexture& loaded_texture,
 
     const uint32_t width = rdp.texture_tile[tile].line_size_bytes / 2;
     const uint32_t height = (size_bytes / 2) / rdp.texture_tile[tile].line_size_bytes;
-	gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
+    gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
     // DumpTexture(loaded_texture.otr_path, addr, width, height);
 }
 
@@ -700,7 +700,7 @@ static void import_texture_ia4(int tile, const LoadedTexture& loaded_texture, bo
     const uint32_t width = rdp.texture_tile[tile].line_size_bytes * 2;
     const uint32_t height = size_bytes / rdp.texture_tile[tile].line_size_bytes;
 
-	gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
+    gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
     // DumpTexture(loaded_texture.otr_path, rgba32_buf, width, height);
 }
 
@@ -726,7 +726,7 @@ static void import_texture_ia8(int tile, const LoadedTexture& loaded_texture, bo
     const uint32_t width = rdp.texture_tile[tile].line_size_bytes;
     const uint32_t height = size_bytes / rdp.texture_tile[tile].line_size_bytes;
 
-	gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
+    gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
     // DumpTexture(loaded_texture.otr_path, rgba32_buf, width, height);
 }
 
@@ -752,7 +752,7 @@ static void import_texture_ia16(int tile, const LoadedTexture& loaded_texture, b
     const uint32_t width = rdp.texture_tile[tile].line_size_bytes / 2;
     const uint32_t height = size_bytes / rdp.texture_tile[tile].line_size_bytes;
 
-	gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
+    gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
     // DumpTexture(loaded_texture.otr_path, rgba32_buf, width, height);
 }
 
@@ -779,7 +779,7 @@ static void import_texture_i4(int tile, const LoadedTexture& loaded_texture, boo
     const uint32_t width = rdp.texture_tile[tile].line_size_bytes * 2;
     const uint32_t height = size_bytes / rdp.texture_tile[tile].line_size_bytes;
 
-	gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
+    gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
     // DumpTexture(loaded_texture.otr_path, rgba32_buf, width, height);
 }
 
@@ -804,7 +804,7 @@ static void import_texture_i8(int tile, const LoadedTexture& loaded_texture, boo
     const uint32_t width = rdp.texture_tile[tile].line_size_bytes;
     const uint32_t height = size_bytes / rdp.texture_tile[tile].line_size_bytes;
 
-	gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
+    gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
     // DumpTexture(loaded_texture.otr_path, rgba32_buf, width, height);
 }
 
@@ -830,7 +830,7 @@ static inline void palette_to_rgba32(const uint16_t palentry, uint8_t *rgba32_bu
 }
 
 static void import_texture_ci4(int tile, const LoadedTexture& loaded_texture, bool gen_mipmaps) {
-	const RawTexMetadata* metadata = &loaded_texture.raw_tex_metadata;
+    const RawTexMetadata* metadata = &loaded_texture.raw_tex_metadata;
     const uint8_t* addr = loaded_texture.addr;
     const uint32_t size_bytes = loaded_texture.size_bytes;
     const uint32_t full_image_line_size_bytes =
@@ -854,11 +854,11 @@ static void import_texture_ci4(int tile, const LoadedTexture& loaded_texture, bo
     const uint32_t width = result_line_size * 2;
     const uint32_t height = size_bytes / result_line_size;
 
-	gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
+    gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
 }
 
 static void import_texture_ci8(int tile, const LoadedTexture& loaded_texture, bool gen_mipmaps) {
-	const RawTexMetadata* metadata = &loaded_texture.raw_tex_metadata;
+    const RawTexMetadata* metadata = &loaded_texture.raw_tex_metadata;
     const uint8_t* addr = loaded_texture.addr;
     const uint32_t size_bytes = loaded_texture.size_bytes;
     const uint32_t full_image_line_size_bytes =
@@ -880,7 +880,7 @@ static void import_texture_ci8(int tile, const LoadedTexture& loaded_texture, bo
     const uint32_t width = result_line_size;
     const uint32_t height = size_bytes / result_line_size;
 
-	gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
+    gfx_rapi->upload_texture(tex_upload_buffer, width, height, gen_mipmaps);
 }
 
 static void import_texture(int i, int tile, bool importReplacement) {
@@ -1250,10 +1250,13 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx, bo
     }
 
     if ((rsp.geometry_mode & G_CULL_BOTH) != 0) {
-        float dx1 = v1->x / (v1->w) - v2->x / (v2->w);
-        float dy1 = v1->y / (v1->w) - v2->y / (v2->w);
-        float dx2 = v3->x / (v3->w) - v2->x / (v2->w);
-        float dy2 = v3->y / (v3->w) - v2->y / (v2->w);
+        float inv_w1 = 1.0f / v1->w;
+        float inv_w2 = 1.0f / v2->w;
+        float inv_w3 = 1.0f / v3->w;
+        float dx1 = (v1->x * inv_w1) - (v2->x * inv_w2);
+        float dy1 = (v1->y * inv_w1) - (v2->y * inv_w2);
+        float dx2 = (v3->x * inv_w3) - (v2->x * inv_w2);
+        float dy2 = (v3->y * inv_w3) - (v2->y * inv_w2);
         float cross = dx1 * dy2 - dy1 * dx2;
 
         if ((v1->w < 0) ^ (v2->w < 0) ^ (v3->w < 0)) {
@@ -1461,47 +1464,57 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx, bo
 
     struct GfxClipParameters clip_parameters = gfx_rapi->get_clip_parameters();
 
+    float *buf_vbo_ptr = &buf_vbo[buf_vbo_len];
+    float u_scale[2] = {0.03125f, 0.03125f};
+    float v_scale[2] = {0.03125f, 0.03125f};
+    float u_offset[2] = {0.0f, 0.0f};
+    float v_offset[2] = {0.0f, 0.0f};
+    float inv_tex_width[2] = {1.0f, 1.0f};
+    float inv_tex_height[2] = {1.0f, 1.0f};
+    
+    for (int t = 0; t < 2; t++) {
+        if (!used_textures[t]) {
+            continue;
+        }
+        
+        // TODO: fix this; for now just ignore smaller mips
+        const uint32_t tile = gfx_lod_tile_offset(t);
+        
+        int shifts = rdp.texture_tile[rdp.first_tile_index + tile].shifts;
+        int shiftt = rdp.texture_tile[rdp.first_tile_index + tile].shiftt;
+        
+        inv_tex_width[t] = 1.0f / (float)tex_width[t];
+        inv_tex_height[t] = 1.0f / (float)tex_height[t];
+
+        if (shifts != 0) {
+            u_scale[t] *= (shifts <= 10) ? (1.0f / (1 << shifts)) : (float)(1 << (16 - shifts));
+        }
+        if (shiftt != 0) {
+            v_scale[t] *= (shiftt <= 10) ? (1.0f / (1 << shiftt)) : (float)(1 << (16 - shiftt));
+        }
+        
+        u_offset[t] = rdp.texture_tile[rdp.first_tile_index + tile].uls * 0.25f;
+        v_offset[t] = rdp.texture_tile[rdp.first_tile_index + tile].ult * 0.25f;
+    }
+
     for (int i = 0; i < 3; i++) {
         float z = v_arr[i]->z, w = v_arr[i]->w;
         if (clip_parameters.z_is_from_0_to_1) {
-            z = (z + w) / 2.0f;
+            z = (z + w) * 0.5f;
         }
 
-        buf_vbo[buf_vbo_len++] = v_arr[i]->x;
-        buf_vbo[buf_vbo_len++] = clip_parameters.invert_y ? -v_arr[i]->y : v_arr[i]->y;
-        buf_vbo[buf_vbo_len++] = z;
-        buf_vbo[buf_vbo_len++] = w;
+        *buf_vbo_ptr++ = v_arr[i]->x;
+        *buf_vbo_ptr++ = clip_parameters.invert_y ? -v_arr[i]->y : v_arr[i]->y;
+        *buf_vbo_ptr++ = z;
+        *buf_vbo_ptr++ = w;
 
         for (int t = 0; t < 2; t++) {
             if (!used_textures[t]) {
                 continue;
             }
 
-            // TODO: fix this; for now just ignore smaller mips
-            const uint32_t tile = gfx_lod_tile_offset(t);
-
-            float u = v_arr[i]->u / 32.0f;
-            float v = v_arr[i]->v / 32.0f;
-
-            int shifts = rdp.texture_tile[rdp.first_tile_index + tile].shifts;
-            int shiftt = rdp.texture_tile[rdp.first_tile_index + tile].shiftt;
-            if (shifts != 0) {
-                if (shifts <= 10) {
-                    u /= 1 << shifts;
-                } else {
-                    u *= 1 << (16 - shifts);
-                }
-            }
-            if (shiftt != 0) {
-                if (shiftt <= 10) {
-                    v /= 1 << shiftt;
-                } else {
-                    v *= 1 << (16 - shiftt);
-                }
-            }
-
-            u -= rdp.texture_tile[rdp.first_tile_index + tile].uls / 4.0f;
-            v -= rdp.texture_tile[rdp.first_tile_index + tile].ult / 4.0f;
+            float u = (v_arr[i]->u * u_scale[t]) - u_offset[t];
+            float v = (v_arr[i]->v * v_scale[t]) - v_offset[t];
 
             if (!is_rect) {
                 if (!(rdp.other_mode_h & G_TP_PERSP)) {
@@ -1516,32 +1529,32 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx, bo
                 }
             }
 
-            buf_vbo[buf_vbo_len++] = u / tex_width[t];
-            buf_vbo[buf_vbo_len++] = v / tex_height[t];
+            *buf_vbo_ptr++ = u * inv_tex_width[t];
+            *buf_vbo_ptr++ = v * inv_tex_height[t];
 
             bool clampS = tm & (1 << 2 * t);
             bool clampT = tm & (1 << (2 * t + 1));
 
             if (clampS) {
-                buf_vbo[buf_vbo_len++] = (tex_width2[t] - 0.5f) / tex_width[t];
+                *buf_vbo_ptr++ = (tex_width2[t] - 0.5f) * inv_tex_width[t];
             }
             if (clampT) {
-                buf_vbo[buf_vbo_len++] = (tex_height2[t] - 0.5f) / tex_height[t];
+                *buf_vbo_ptr++ = (tex_height2[t] - 0.5f) * inv_tex_height[t];
             }
         }
 
         if (use_fog) {
-            buf_vbo[buf_vbo_len++] = rdp.fog_color.r / 255.0f;
-            buf_vbo[buf_vbo_len++] = rdp.fog_color.g / 255.0f;
-            buf_vbo[buf_vbo_len++] = rdp.fog_color.b / 255.0f;
-            buf_vbo[buf_vbo_len++] = v_arr[i]->fog / 255.0f; // fog factor
+            *buf_vbo_ptr++ = rdp.fog_color.r * (1.0f / 255.0f);
+            *buf_vbo_ptr++ = rdp.fog_color.g * (1.0f / 255.0f);
+            *buf_vbo_ptr++ = rdp.fog_color.b * (1.0f / 255.0f);
+            *buf_vbo_ptr++ = v_arr[i]->fog * (1.0f / 255.0f); // fog factor
         }
 
         if (use_grayscale) {
-            buf_vbo[buf_vbo_len++] = rdp.grayscale_color.r / 255.0f;
-            buf_vbo[buf_vbo_len++] = rdp.grayscale_color.g / 255.0f;
-            buf_vbo[buf_vbo_len++] = rdp.grayscale_color.b / 255.0f;
-            buf_vbo[buf_vbo_len++] = rdp.grayscale_color.a / 255.0f; // lerp interpolation factor (not alpha)
+            *buf_vbo_ptr++ = rdp.grayscale_color.r * (1.0f / 255.0f);
+            *buf_vbo_ptr++ = rdp.grayscale_color.g * (1.0f / 255.0f);
+            *buf_vbo_ptr++ = rdp.grayscale_color.b * (1.0f / 255.0f);
+            *buf_vbo_ptr++ = rdp.grayscale_color.a * (1.0f / 255.0f); // lerp interpolation factor (not alpha)
         }
 
         for (int j = 0; j < num_inputs; j++) {
@@ -1601,18 +1614,19 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx, bo
                         break;
                 }
                 if (k == 0) {
-                    buf_vbo[buf_vbo_len++] = color->r / 255.0f;
-                    buf_vbo[buf_vbo_len++] = color->g / 255.0f;
-                    buf_vbo[buf_vbo_len++] = color->b / 255.0f;
+                    *buf_vbo_ptr++ = color->r * (1.0f / 255.0f);
+                    *buf_vbo_ptr++ = color->g * (1.0f / 255.0f);
+                    *buf_vbo_ptr++ = color->b * (1.0f / 255.0f);
                 } else {
-                    buf_vbo[buf_vbo_len++] = color->a / 255.0f;
+                    *buf_vbo_ptr++ = color->a * (1.0f / 255.0f);
                 }
             }
         }
     }
 
+    buf_vbo_len = buf_vbo_ptr - buf_vbo;
 #ifdef __vita__
-	buf_vbo_num_tris++;
+    buf_vbo_num_tris++;
 #else
     if (++buf_vbo_num_tris == MAX_BUFFERED) {
         gfx_flush();
@@ -2743,7 +2757,7 @@ extern "C" void gfx_end_frame(void) {
         gfx_wapi->swap_buffers_end();
     }
 #ifdef __vita__
-	buf_vbo = (float *)vglAllocFromScratch(10 * 1024 * 1024);
+    buf_vbo = (float *)vglAllocFromScratch(10 * 1024 * 1024);
 #endif
 }
 
