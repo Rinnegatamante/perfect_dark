@@ -61,6 +61,8 @@ static displaymode *vidModes = &vidModeDefault;
 static s32 texFilter = FILTER_LINEAR;
 static s32 texFilter2D = true;
 static s32 texDetail = false;
+static s32 texMipmapFilter = MIPMAP_LINEAR;
+static u32 texAnisotropicFilter = 4;
 
 static u32 dlcount = 0;
 static u32 frames = 0;
@@ -70,6 +72,7 @@ static f64 fpsTime = 0.0;
 static s32 fpsNumFrames = 0;
 
 static s32 videoInitDisplayModes(void);
+void optionsMenuInit();
 
 s32 videoInit(void)
 {
@@ -107,6 +110,9 @@ s32 videoInit(void)
 	videoSetFramerateLimit(vidFramerateLimit);
 
 	gfx_set_texture_filter((enum FilteringMode)texFilter);
+	gfx_set_mipmap_filter((enum MipmapFilteringMode)texMipmapFilter);
+	videoSetAnisotropicFilter(texAnisotropicFilter);
+	optionsMenuInit();
 
 	initDone = true;
 	return 0;
@@ -392,6 +398,16 @@ u32 videoGetTextureFilter(void)
 	return texFilter;
 }
 
+u32 videoGetAnisotropicFilter()
+{
+	return texAnisotropicFilter;
+}
+
+u32 videoGetMaxAnisotropyLevel()
+{
+	return renderingAPI->get_max_anisotropy_level();
+}
+
 s32 videoGetDetailTextures(void)
 {
 	return texDetail;
@@ -462,6 +478,12 @@ void videoSetTextureFilter(u32 filter)
 void videoSetTextureFilter2D(s32 filter)
 {
 	texFilter2D = !!filter;
+}
+
+void videoSetAnisotropicFilter(u32 level)
+{
+	texAnisotropicFilter = level;
+	renderingAPI->set_anisotropy_level(level);
 }
 
 void videoSetDetailTextures(s32 detail)
@@ -538,6 +560,11 @@ void videoFreeCachedTexture(const void *texptr)
 	gfx_texture_cache_delete(texptr);
 }
 
+void videoFreeCachedTextures(const void *start, const void *end)
+{
+	gfx_texture_cache_delete_range(start, end);
+}
+
 void videoShutdown(void)
 {
 	free(vidModes);
@@ -561,4 +588,6 @@ PD_CONSTRUCTOR static void videoConfigInit(void)
 	configRegisterInt("Video.TextureFilter", &texFilter, 0, 2);
 	configRegisterInt("Video.TextureFilter2D", &texFilter2D, 0, 1);
 	configRegisterInt("Video.DetailTextures", &texDetail, 0, 1);
+	configRegisterInt("Video.MipmapFilter", &texMipmapFilter, 0, 2);
+	configRegisterInt("Video.AnisotropicFilter", &texAnisotropicFilter, 0, 16);
 }
