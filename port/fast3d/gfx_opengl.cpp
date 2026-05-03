@@ -26,7 +26,7 @@ extern "C" {
     SceGxmTexture *vglGetGxmTexture(GLenum target);
     void vglBufferData(GLenum target, const GLvoid *data);
 };
-#define SHADER_MAGIC (1)
+#define SHADER_MAGIC (2)
 #endif
 
 using namespace std;
@@ -42,9 +42,6 @@ struct ShaderProgram {
     GLint frame_count_location;
     GLint noise_scale_location;
     GLint three_point_filter_locations[2];
-#ifdef __vita__
-    GLint uTexSize[2];
-#endif
 };
 
 struct Framebuffer {
@@ -55,13 +52,6 @@ struct Framebuffer {
 
     GLuint fbo, clrbuf, clrbuf_msaa, rbo;
 };
-
-#ifdef __vita__
-float tex0_size[2];
-float tex1_size[2];
-float *cur_tex_size = tex0_size;
-ShaderProgram *cur_gl_program;
-#endif
 
 static std::map<pair<uint64_t, uint32_t>, struct ShaderProgram> shader_program_pool;
 static GLuint opengl_vbo;
@@ -142,9 +132,6 @@ static void gfx_opengl_load_shader(struct ShaderProgram* new_prg) {
     glUseProgram(new_prg->opengl_program_id);
     gfx_opengl_vertex_array_set_attribs(new_prg);
     gfx_opengl_set_uniforms(new_prg);
-#ifdef __vita__
-    cur_gl_program = new_prg;
-#endif
 }
 
 static void append_str(char* buf, size_t* len, const char* str) {
@@ -420,17 +407,11 @@ static struct ShaderProgram* gfx_opengl_create_and_load_new_shader(uint64_t shad
 
     if (cc_features.used_textures[0]) {
         append_line(fs_buf, &fs_len, "uniform sampler2D uTex0;");
-#ifdef __vita__
-        append_line(fs_buf, &fs_len, "uniform vec2 uTexSize0;");
-#endif
         if (current_filter_mode == FILTER_THREE_POINT)
             append_line(fs_buf, &fs_len, "uniform int three_point_filter0;");
     }
     if (cc_features.used_textures[1]) {
         append_line(fs_buf, &fs_len, "uniform sampler2D uTex1;");
-#ifdef __vita__
-        append_line(fs_buf, &fs_len, "uniform vec2 uTexSize1;");
-#endif
         if (current_filter_mode == FILTER_THREE_POINT)
             append_line(fs_buf, &fs_len, "uniform int three_point_filter1;");
     }
@@ -500,11 +481,7 @@ static struct ShaderProgram* gfx_opengl_create_and_load_new_shader(uint64_t shad
     for (int i = 0; i < 2; i++) {
         if (cc_features.used_textures[i]) {
             bool s = cc_features.clamp[i][0], t = cc_features.clamp[i][1];
-#ifdef __vita__
-            fs_len += sprintf(fs_buf + fs_len, "    vec2 texSize%d = uTexSize%d;\n", i, i);
-#else
             fs_len += sprintf(fs_buf + fs_len, "    vec2 texSize%d = vec2(textureSize(uTex%d, 0));\n", i, i);
-#endif
             if (!s && !t) {
                 fs_len += sprintf(fs_buf + fs_len, "    vec2 vTexCoordAdj%d = vTexCoord%d;\n", i, i);
             } else {
@@ -719,16 +696,10 @@ program_ready:
     if (cc_features.used_textures[0]) {
         GLint sampler_location = glGetUniformLocation(shader_program, "uTex0");
         glUniform1i(sampler_location, 0);
-#ifdef __vita__
-        prg->uTexSize[0] = glGetUniformLocation(shader_program, "uTexSize0");
-#endif
     }
     if (cc_features.used_textures[1]) {
         GLint sampler_location = glGetUniformLocation(shader_program, "uTex1");
         glUniform1i(sampler_location, 1);
-#ifdef __vita__
-        prg->uTexSize[1] = glGetUniformLocation(shader_program, "uTexSize1");
-#endif
     }
 
     prg->frame_count_location = glGetUniformLocation(shader_program, "frame_count");
@@ -773,18 +744,6 @@ static void gfx_opengl_delete_texture(uint32_t texID) {
 static void gfx_opengl_select_texture(int tile, GLuint texture_id, bool linear_filter) {
     glActiveTexture(GL_TEXTURE0 + tile);
     glBindTexture(GL_TEXTURE_2D, texture_id);
-#ifdef __vita__
-    SceGxmTexture *gxm_tex = vglGetGxmTexture(GL_TEXTURE_2D);
-    if (tile == 0) {
-        tex0_size[0] = sceGxmTextureGetWidth(gxm_tex);
-        tex0_size[1] = sceGxmTextureGetHeight(gxm_tex);
-        cur_tex_size = tex0_size;
-    } else {
-        tex1_size[0] = sceGxmTextureGetWidth(gxm_tex);
-        tex1_size[1] = sceGxmTextureGetHeight(gxm_tex);
-        cur_tex_size = tex1_size;
-    }
-#endif
     current_textures_linear_filter[tile] = linear_filter;
 }
 
@@ -907,12 +866,6 @@ static void gfx_opengl_set_use_alpha(bool use_alpha, bool modulate) {
 static void gfx_opengl_draw_triangles(float *buf_vbo, size_t buf_vbo_len, size_t buf_vbo_num_tris) {
     // printf("flushing %d tris\n", buf_vbo_num_tris);
 #ifdef __vita__
-    if (cur_gl_program->used_textures[0]) {
-        glUniform2fv(cur_gl_program->uTexSize[0], 1, tex0_size);
-    }
-    if (cur_gl_program->used_textures[1]) {
-        glUniform2fv(cur_gl_program->uTexSize[1], 1, tex1_size);
-    }
     vglBufferData(GL_ARRAY_BUFFER, buf_vbo);
 #else
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * buf_vbo_len, buf_vbo, GL_STREAM_DRAW);

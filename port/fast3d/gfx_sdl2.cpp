@@ -132,7 +132,7 @@ static void gfx_sdl_init(const struct GfxWindowInitSettings *set) {
 #ifdef __vita__
 	sceIoMkdir("ux0:data/pd/shader_cache", 0777);
 	vglInitExtended(0, 960, 544, 8 * 1024 * 1024, SCE_GXM_MULTISAMPLE_4X);
-	buf_vbo = vglAllocFromScratch(10 * 1024 * 1024);
+	buf_vbo = (float *)vglAllocFromScratch(10 * 1024 * 1024);
 	
 	int r = trophies_init();
 	SceIoStat st;
