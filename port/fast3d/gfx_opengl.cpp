@@ -906,7 +906,7 @@ static void gfx_opengl_enable_debug(void) {
 
 static bool gfx_opengl_supports_framebuffers(void) {
 #ifdef __vita__
-	return false; // Off for now since there's some issue with glBlitFramebuffer
+	return true;
 #else
     if (GLVersion.major > 2) {
         // GL3.0+ supports everything we need, but we'll still check it for sanity
