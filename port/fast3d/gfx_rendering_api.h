@@ -8,7 +8,6 @@
 struct ShaderProgram;
 
 struct GfxClipParameters {
-    bool z_is_from_0_to_1;
     bool invert_y;
 };
 
@@ -18,7 +17,7 @@ enum MipmapFilteringMode { MIPMAP_DISABLED, MIPMAP_NEAREST, MIPMAP_LINEAR };
 struct GfxRenderingAPI {
     const char* (*get_name)(void);
     int (*get_max_texture_size)(void);
-    struct GfxClipParameters (*get_clip_parameters)(void);
+    bool (*get_invert_y)(void);
     void (*unload_shader)(struct ShaderProgram* old_prg);
     void (*load_shader)(struct ShaderProgram* new_prg);
     struct ShaderProgram* (*create_and_load_new_shader)(uint64_t shader_id0, uint32_t shader_id1);

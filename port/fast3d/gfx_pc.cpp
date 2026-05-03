@@ -1462,7 +1462,7 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx, bo
 
     gfx_rapi->shader_get_info(prg, &num_inputs, used_textures);
 
-    struct GfxClipParameters clip_parameters = gfx_rapi->get_clip_parameters();
+    bool invert_y = gfx_rapi->get_invert_y();
 
     float *buf_vbo_ptr = &buf_vbo[buf_vbo_len];
     float u_scale[2] = {0.03125f, 0.03125f};
@@ -1499,12 +1499,9 @@ static void gfx_sp_tri1(uint8_t vtx1_idx, uint8_t vtx2_idx, uint8_t vtx3_idx, bo
 
     for (int i = 0; i < 3; i++) {
         float z = v_arr[i]->z, w = v_arr[i]->w;
-        if (clip_parameters.z_is_from_0_to_1) {
-            z = (z + w) * 0.5f;
-        }
 
         *buf_vbo_ptr++ = v_arr[i]->x;
-        *buf_vbo_ptr++ = clip_parameters.invert_y ? -v_arr[i]->y : v_arr[i]->y;
+        *buf_vbo_ptr++ = invert_y ? -v_arr[i]->y : v_arr[i]->y;
         *buf_vbo_ptr++ = z;
         *buf_vbo_ptr++ = w;
 

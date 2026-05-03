@@ -84,8 +84,8 @@ static const char* gfx_opengl_get_name() {
     return "OpenGL";
 }
 
-static struct GfxClipParameters gfx_opengl_get_clip_parameters(void) {
-    return { false, framebuffers[current_framebuffer].invert_y };
+static bool gfx_opengl_invert_y(void) {
+    return framebuffers[current_framebuffer].invert_y;
 }
 
 static void gfx_opengl_vertex_array_set_attribs(struct ShaderProgram* prg) {
@@ -1360,7 +1360,7 @@ static void gfx_opengl_set_anisotropy_level(int level) {
 struct GfxRenderingAPI gfx_opengl_api = {
     gfx_opengl_get_name,
     gfx_opengl_get_max_texture_size,
-    gfx_opengl_get_clip_parameters,
+    gfx_opengl_invert_y,
     gfx_opengl_unload_shader,
     gfx_opengl_load_shader,
     gfx_opengl_create_and_load_new_shader,
