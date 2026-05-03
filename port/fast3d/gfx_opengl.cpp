@@ -1316,22 +1316,17 @@ void gfx_opengl_copy_framebuffer(int fb_dst, int fb_src, int left, int top, bool
         std::swap(dstY0, dstY1);
     }
 
-#ifndef __vita__
     if (fb_src == 0) {
-        // GLES does not support GL_FRONT here
-        glReadBuffer((use_back || gl_es) ? GL_BACK : GL_FRONT);
+        glReadBuffer((use_back) ? GL_BACK : GL_FRONT);
     } else {
         glReadBuffer(GL_COLOR_ATTACHMENT0);
     }
-#endif
 
     glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffers[current_framebuffer].fbo);
 
-#ifndef __vita__
     glReadBuffer(GL_BACK);
-#endif
 
     glEnable(GL_SCISSOR_TEST);
 }
