@@ -159,7 +159,7 @@ clean_shader_cache:
 			sceIoDclose(fd);
 		}
 	}
-	vglSetupDisplayRenderTarget(3);
+	vglSetupRenderTargetScenesNum(3, 1);
 	vglInitExtended(0, 960, 544, 8 * 1024 * 1024, SCE_GXM_MULTISAMPLE_4X);
 	buf_vbo = (float *)vglAllocFromScratch(10 * 1024 * 1024);
 	
