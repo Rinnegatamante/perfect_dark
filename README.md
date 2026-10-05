@@ -194,8 +194,9 @@ Controls can be rebound in `pd.ini`. Default control scheme is as follows:
 ### PlayStation Vita
 
 1. Set up the [vitasdk environment](https://vitasdk.org/).
-2. Compile [vitaGL](https://github.com/Rinnegatamante/vitaGL) with this configuration:  
-   `make CIRCULAR_POOL_SPEEDHACK=1 USE_SCRATCH_MEMORY=1 NO_DEBUG=1 DRAW_SPEEDHACK=1 install`
+2. Clone [vitaGL](https://github.com/Rinnegatamante/vitaGL) into the source tree and compile the local copy with this configuration:  
+   `git clone https://github.com/Rinnegatamante/vitaGL.git vitagl`  
+   `make -C vitagl CIRCULAR_POOL_SPEEDHACK=1 USE_SCRATCH_MEMORY=1 HAVE_GLSL_TEXTURE_SIZE=1 NO_DEBUG=1 DRAW_SPEEDHACK=1`
 3. Get the source code:  
    `git clone --recursive https://github.com/fgsfdsfgs/perfect_dark.git && cd perfect_dark`
 7. Build:
