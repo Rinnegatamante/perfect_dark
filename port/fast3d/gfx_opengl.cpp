@@ -786,7 +786,9 @@ static void gfx_opengl_set_sampler_parameters(int tile, bool linear_filter, uint
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, max_filter);
 
     if (mipmaps) {
+#ifndef __vita__
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY, current_anisotropy_level);
+#endif
     }
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, gfx_cm_to_opengl(cms));
@@ -1348,13 +1350,21 @@ void gfx_opengl_set_mipmap_filter(MipmapFilteringMode mode) {
 }
 
 static int gfx_opengl_get_max_anisotropy_level() {
+#ifdef __vita__
+    return 1;
+#else
 	GLfloat max_aniso_level;
 	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY, &max_aniso_level);
 	return (int)max_aniso_level;
+#endif
 }
 
 static void gfx_opengl_set_anisotropy_level(int level) {
+#ifdef __vita__
+	current_anisotropy_level = 1;
+#else
 	current_anisotropy_level = level;
+#endif
 }
 
 struct GfxRenderingAPI gfx_opengl_api = {
