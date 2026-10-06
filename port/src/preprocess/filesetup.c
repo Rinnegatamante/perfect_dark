@@ -8,6 +8,7 @@
 #include "preprocess/setup.h"
 
 extern u32 chraiGetAilistLength(u8 *list);
+extern u32 chraiGetCommandLength(u8 *ailist, u32 aioffset);
 
 static inline void convF32(f32 *dst, f32 src) { *(u32*)dst = PD_BE32(*(u32*)&src); }
 static inline void convU32(u32 *dst, u32 src) { *dst = PD_BE32(src); }
@@ -1100,6 +1101,30 @@ static u32 convertAiLists(u8* dst, u8* src)
 	return (u32)((u8 *)dstailist - dst + sizeof(uintptr_t));
 }
 
+static void patchAilist(u8 *list, u32 len, u32 id)
+{
+#if PAL
+	if (id == 0x1418) {
+		for (u32 offset = 0; offset < len;) {
+			u32 cmdlen = chraiGetCommandLength(list, offset);
+			u16 type = ((u16)list[offset] << 8) | list[offset + 1];
+
+			if (type == 0x00bd
+					&& cmdlen == 6
+					&& list[offset + 2] == 0
+					&& list[offset + 3] == 0
+					&& list[offset + 4] == 60
+					&& list[offset + 5] == 0x2c) {
+				list[offset + 4] = 0;
+				break;
+			}
+
+			offset += cmdlen;
+		}
+	}
+#endif
+}
+
 static u32 convertLists(u8 *dst, u8 *src, u32 dstpos, u32 src_ofs)
 {
 	ptrReset();
@@ -1129,6 +1154,7 @@ static u32 convertLists(u8 *dst, u8 *src, u32 dstpos, u32 src_ofs)
 		u8 *list = &src[src_ptr_list];
 		u32 listsize = chraiGetAilistLength(list);
 		memcpy(dst + dstpos, list, listsize);
+		patchAilist(dst + dstpos, listsize, ailist->id);
 
 		dstpos += PD_ALIGN(listsize, 4);
 	}

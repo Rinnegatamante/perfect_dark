@@ -3522,7 +3522,7 @@ u8 func0422_intro_speaking[] = {
 #if VERSION == VERSION_PAL_FINAL
 	beginloop(0xb7)
 		if_stage_flag_eq(STAGEFLAG_STOP_INTRO, TRUE, /*goto*/ 0x06)
-		if_timer_gt(60, /*goto*/ 0x2c)
+		if_timer_gt(0, /*goto*/ 0x2c)
 	endloop(0xb7)
 
 	label(0x2c)
