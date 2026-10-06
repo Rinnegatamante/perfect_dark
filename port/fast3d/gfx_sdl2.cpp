@@ -4,7 +4,7 @@
 #include <time.h>
 
 #ifdef __vita__
-#define SHADER_MAGIC (2) // Sync in gfx_opengl.cpp
+#define SHADER_MAGIC (3) // Sync in gfx_opengl.cpp
 #include <vitasdk.h>
 #include <vitaGL.h>
 #include "../../vita/trophies.h"
