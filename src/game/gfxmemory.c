@@ -12,6 +12,9 @@
 #include "data.h"
 #include "types.h"
 #include "platform.h"
+#ifdef __vita__
+#include "../../port/fast3d/gfx_vita_backend.h"
+#endif
 
 /**
  * This file handles memory usage for graphics related tasks.
@@ -187,6 +190,9 @@ void *gfxAllocate(u32 size)
 
 void gfxSwapBuffers(void)
 {
+#ifdef __vita__
+	gfx_vita_backend_wait_idle();
+#endif
 	g_GfxActiveBufferIndex ^= 1;
 	g_GfxRequestedDisplayList = false;
 	g_GfxMemPos = g_VtxBuffers[g_GfxActiveBufferIndex];
