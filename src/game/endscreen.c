@@ -1662,6 +1662,15 @@ void endscreenPrepare(void)
 	}
 	
 #ifdef __vita__
+	if (g_CheatsActiveBank0
+			|| g_CheatsActiveBank1
+			|| g_MissionConfig.pdmode
+			|| g_Vars.currentplayer->isdead
+			|| g_Vars.currentplayer->aborted
+			|| !objectiveIsAllComplete()) {
+		return;
+	}
+
 	// Generic mission completion trophies unlock
 	if (g_MissionConfig.difficulty != DIFF_PD && g_MissionConfig.difficulty != DIFF_A && g_MissionConfig.stageindex <= SOLOSTAGEINDEX_SKEDARRUINS) {
 		trophies_unlock(g_MissionConfig.stageindex * 2 + g_MissionConfig.difficulty);
