@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #define DEBUG
+#define TROPHY_QUEUE_SIZE 128
 
 static char comm_id[12] = {0};
 static char signature[160] = {0xb9, 0xdd, 0xe1, 0x3b, 0x01, 0x00};
@@ -35,16 +36,27 @@ int sceNpTrophyGetTrophyUnlockState(int ctx, int handle, SceNpTrophyUnlockState 
 
 int trophies_available = 0;
 
-volatile int trp_id;
-SceUID trp_request_mutex;
+static uint32_t trp_queue[TROPHY_QUEUE_SIZE];
+static uint32_t trp_queue_read;
+static uint32_t trp_queue_write;
+static uint32_t trophies_pending[4];
+SceUID trp_request_sema;
+
 int trophies_unlocker(SceSize args, void *argp) {
 	for (;;) {
-		sceKernelWaitSema(trp_request_mutex, 1, NULL);
-		int local_trp_id = trp_id;
+		sceKernelWaitSema(trp_request_sema, 1, NULL);
+		uint32_t local_trp_id = trp_queue[trp_queue_read];
+		uint32_t bit = 1u << (local_trp_id & 31);
+		uint32_t word = local_trp_id >> 5;
+		trp_queue_read = (trp_queue_read + 1) % TROPHY_QUEUE_SIZE;
+
 		int trp_handle;
 		sceNpTrophyCreateHandle(&trp_handle);
 		sceNpTrophyUnlockTrophy(trp_ctx, trp_handle, local_trp_id, &plat_id);
 		sceNpTrophyDestroyHandle(trp_handle);
+
+		trophies_unlocks.unk[word] |= bit;
+		trophies_pending[word] &= ~bit;
 	}
 }
 
@@ -75,7 +87,7 @@ int trophies_init() {
 	sceNpTrophySetupDialogTerm();
 	
 	// Starting trophy unlocker thread
-	trp_request_mutex = sceKernelCreateSema("trps request", 0, 0, 1, NULL);
+	trp_request_sema = sceKernelCreateSema("trps request", 0, 0, TROPHY_QUEUE_SIZE, NULL);
 	SceUID tropies_unlocker_thd = sceKernelCreateThread("trophies unlocker", &trophies_unlocker, 0x10000100, 0x10000, 0, 0, NULL);
 	sceKernelStartThread(tropies_unlocker_thd, 0, NULL);
 	
@@ -92,15 +104,19 @@ int trophies_init() {
 
 uint8_t trophies_is_unlocked(uint32_t id) {
 	if (trophies_available) {
-		return (trophies_unlocks.unk[id >> 5] & (1 << (id & 31))) > 0;
+		return (trophies_unlocks.unk[id >> 5] & (1u << (id & 31))) > 0;
 	}
 	return 0;
 }
 
 void trophies_unlock(uint32_t id) {
-	if (trophies_available && !trophies_is_unlocked(id)) {
-		trophies_unlocks.unk[id >> 5] |= (1 << (id & 31));
-		trp_id = id;
-		sceKernelSignalSema(trp_request_mutex, 1);
+	uint32_t word = id >> 5;
+	uint32_t bit = 1u << (id & 31);
+
+	if (trophies_available && !trophies_is_unlocked(id) && !(trophies_pending[word] & bit)) {
+		trophies_pending[word] |= bit;
+		trp_queue[trp_queue_write] = id;
+		trp_queue_write = (trp_queue_write + 1) % TROPHY_QUEUE_SIZE;
+		sceKernelSignalSema(trp_request_sema, 1);
 	}
 }
