@@ -572,6 +572,73 @@ static MenuItemHandlerResult menuhandlerSwapSticks(s32 operation, struct menuite
 	return 0;
 }
 
+#ifdef __vita__
+static MenuItemHandlerResult menuhandlerGyroAim(s32 operation, struct menuitem *item, union handlerdata *data)
+{
+	static const char *opts[] = {
+		"Off",
+		"While Aiming",
+		"Always On"
+	};
+
+	switch (operation) {
+	case MENUOP_GETOPTIONCOUNT:
+		data->dropdown.value = ARRAYCOUNT(opts);
+		break;
+	case MENUOP_GETOPTIONTEXT:
+		return (intptr_t)opts[data->dropdown.value];
+	case MENUOP_SET:
+		inputGyroSetAimMode(data->dropdown.value);
+		break;
+	case MENUOP_GETSELECTEDINDEX:
+		data->dropdown.value = inputGyroGetAimMode();
+		break;
+	case MENUOP_CHECKHIDDEN:
+		return g_ExtMenuPlayer != 0;
+	}
+
+	return 0;
+}
+
+static MenuItemHandlerResult menuhandlerGyroSensitivity(s32 operation, struct menuitem *item, union handlerdata *data)
+{
+	switch (operation) {
+	case MENUOP_GETSLIDER:
+		data->slider.value = inputGyroGetSensitivity() * 100.0f + 0.5f;
+		break;
+	case MENUOP_SET:
+		inputGyroSetSensitivity((f32)data->slider.value / 100.0f);
+		break;
+	case MENUOP_GETSLIDERLABEL:
+		sprintf(data->slider.label, "%.2f", (f32)data->slider.value / 100.0f);
+		break;
+	case MENUOP_CHECKHIDDEN:
+		return g_ExtMenuPlayer != 0;
+	case MENUOP_CHECKDISABLED:
+		return inputGyroGetAimMode() == GYROAIM_OFF;
+	}
+
+	return 0;
+}
+
+static MenuItemHandlerResult menuhandlerGyroInvertY(s32 operation, struct menuitem *item, union handlerdata *data)
+{
+	switch (operation) {
+	case MENUOP_GET:
+		return inputGyroGetInvertY();
+	case MENUOP_SET:
+		inputGyroSetInvertY(data->checkbox.value);
+		break;
+	case MENUOP_CHECKHIDDEN:
+		return g_ExtMenuPlayer != 0;
+	case MENUOP_CHECKDISABLED:
+		return inputGyroGetAimMode() == GYROAIM_OFF;
+	}
+
+	return 0;
+}
+#endif
+
 static MenuItemHandlerResult menuhandlerController(s32 operation, struct menuitem *item, union handlerdata *data)
 {
 	static char ctrlname[35];
@@ -649,6 +716,32 @@ struct menuitem g_ExtendedControllerMenuItems[] = {
 		0,
 		(void *)&g_ExtendedStickMenuDialog,
 	},
+#ifdef __vita__
+	{
+		MENUITEMTYPE_DROPDOWN,
+		0,
+		MENUITEMFLAG_LITERAL_TEXT,
+		(uintptr_t)"Gyro Aim",
+		0,
+		menuhandlerGyroAim,
+	},
+	{
+		MENUITEMTYPE_SLIDER,
+		0,
+		MENUITEMFLAG_LITERAL_TEXT,
+		(uintptr_t)"Gyro Sensitivity",
+		500,
+		menuhandlerGyroSensitivity,
+	},
+	{
+		MENUITEMTYPE_CHECKBOX,
+		0,
+		MENUITEMFLAG_LITERAL_TEXT,
+		(uintptr_t)"Invert Gyro Y",
+		0,
+		menuhandlerGyroInvertY,
+	},
+#endif
 	{
 		MENUITEMTYPE_SLIDER,
 		0,

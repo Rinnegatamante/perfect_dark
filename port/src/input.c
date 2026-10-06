@@ -4,6 +4,9 @@
 #include <PR/ultratypes.h>
 #include <PR/os_thread.h>
 #include <PR/os_cont.h>
+#ifdef __vita__
+#include <psp2/motion.h>
+#endif
 #include "platform.h"
 #include "input.h"
 #include "video.h"
@@ -82,6 +85,14 @@ static s32 mouseX, mouseY;
 static s32 mouseDX, mouseDY;
 static u32 mouseButtons;
 static s32 mouseWheel = 0;
+
+#ifdef __vita__
+static s32 gyroAimMode = GYROAIM_OFF;
+static f32 gyroAimSensitivity = 1.0f;
+static s32 gyroAimInvertY = 0;
+static s32 gyroSampling = 0;
+static u32 gyroLastTimestamp = 0;
+#endif
 
 static s32 mouseLocked = 0;
 static s32 mouseLockMode = MLOCK_AUTO;
@@ -1284,6 +1295,93 @@ void inputMouseSetSpeed(f32 x, f32 y)
 	mouseSensY = y;
 }
 
+#ifdef __vita__
+s32 inputGyroGetAimMode(void)
+{
+	return gyroAimMode;
+}
+
+void inputGyroSetAimMode(s32 mode)
+{
+	gyroAimMode = mode;
+
+	if (gyroAimMode == GYROAIM_OFF && gyroSampling) {
+		sceMotionStopSampling();
+		gyroSampling = 0;
+		gyroLastTimestamp = 0;
+	}
+}
+
+f32 inputGyroGetSensitivity(void)
+{
+	return gyroAimSensitivity;
+}
+
+void inputGyroSetSensitivity(f32 sensitivity)
+{
+	gyroAimSensitivity = sensitivity;
+}
+
+s32 inputGyroGetInvertY(void)
+{
+	return gyroAimInvertY;
+}
+
+void inputGyroSetInvertY(s32 invert)
+{
+	gyroAimInvertY = invert;
+}
+
+void inputGyroGetScaledDelta(f32 *dx, f32 *dy)
+{
+	f32 gdx = 0.0f;
+	f32 gdy = 0.0f;
+
+	if (gyroAimMode != GYROAIM_OFF) {
+		if (!gyroSampling) {
+			sceMotionSetDeadband(SCE_FALSE);
+			sceMotionSetGyroBiasCorrection(SCE_TRUE);
+
+			const s32 result = sceMotionStartSampling();
+
+			if (result >= 0 || result == SCE_MOTION_ERROR_ALREADY_SAMPLING) {
+				gyroSampling = 1;
+				gyroLastTimestamp = 0;
+			}
+		}
+
+		if (gyroSampling) {
+			SceMotionState state;
+
+			if (sceMotionGetState(&state) >= 0) {
+				if (gyroLastTimestamp != 0) {
+					const u32 elapsed = state.timestamp - gyroLastTimestamp;
+
+					if (elapsed > 0 && elapsed <= 100000) {
+						const f32 dt = elapsed * 0.000001f * gyroAimSensitivity;
+						gdx = -state.angularVelocity.y * dt;
+						gdy = state.angularVelocity.x * dt;
+						if (gyroAimInvertY) {
+							gdy = -gdy;
+						}
+					}
+				}
+
+				gyroLastTimestamp = state.timestamp;
+			}
+		}
+	}
+
+	if (dx) {
+		*dx = gdx;
+	}
+
+	if (dy) {
+		*dy = gdy;
+	}
+}
+#endif
+
 s32 inputMouseIsEnabled(void)
 {
 	return mouseEnabled;
@@ -1520,6 +1618,11 @@ PD_CONSTRUCTOR static void inputConfigInit(void)
 	configRegisterInt("Input.FirstGamepadNum", &firstController, 0, 3);
 	configRegisterInt("Input.UseHIDAPI", &useHIDAPI, 0, 1);
 	configRegisterInt("Input.UseRawInput", &useRawInput, 0, 1);
+#ifdef __vita__
+	configRegisterInt("Input.GyroAimMode", &gyroAimMode, GYROAIM_OFF, GYROAIM_ALWAYS_ON);
+	configRegisterFloat("Input.GyroAimSensitivity", &gyroAimSensitivity, 0.0f, 5.0f);
+	configRegisterInt("Input.GyroAimInvertY", &gyroAimInvertY, 0, 1);
+#endif
 
 	char secname[] = "Input.Player1.Binds";
 	char keyname[256] = { 0 };

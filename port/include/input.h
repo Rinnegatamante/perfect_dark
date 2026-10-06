@@ -121,6 +121,14 @@ enum mouselockmode {
 	MLOCK_AUTO = 2
 };
 
+#ifdef __vita__
+enum gyroaimmode {
+	GYROAIM_OFF = 0,
+	GYROAIM_WHILE_AIMING = 1,
+	GYROAIM_ALWAYS_ON = 2
+};
+#endif
+
 // returns bitmask of connected controllers or -1 if failed
 s32 inputInit(void);
 
@@ -228,6 +236,16 @@ void inputMouseGetAbsScaledDelta(f32 *dx, f32 *dy);
 
 void inputMouseGetSpeed(f32 *x, f32 *y);
 void inputMouseSetSpeed(f32 x, f32 y);
+
+#ifdef __vita__
+s32 inputGyroGetAimMode(void);
+void inputGyroSetAimMode(s32 mode);
+f32 inputGyroGetSensitivity(void);
+void inputGyroSetSensitivity(f32 sensitivity);
+s32 inputGyroGetInvertY(void);
+void inputGyroSetInvertY(s32 invert);
+void inputGyroGetScaledDelta(f32 *dx, f32 *dy);
+#endif
 
 s32 inputMouseIsEnabled(void);
 void inputMouseEnable(s32 enabled);
