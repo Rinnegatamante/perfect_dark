@@ -322,6 +322,7 @@
 
 #define gDPFillRectangleEXT gDPFillRectangle
 #define gSPTextureRectangleEXT gSPTextureRectangle
+#define gSPTextureRectangleFlipEXT gSPTextureRectangleFlip
 
 #endif // PLATFORM_N64
 
