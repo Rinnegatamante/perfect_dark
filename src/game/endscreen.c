@@ -1698,7 +1698,7 @@ void endscreenPrepare(void)
 		}
 		break;
 	case SOLOSTAGEINDEX_INVESTIGATION:
-		if (g_MissionConfig.difficulty == DIFF_PA && secs <= 330) {
+		if (g_MissionConfig.difficulty == DIFF_PA && secs <= 390) {
 			trophies_unlock(TRP_THE_PUGILIST);
 		}
 		break;
@@ -1772,7 +1772,7 @@ void endscreenPrepare(void)
 		}
 		break;
 	case SOLOSTAGEINDEX_ATTACKSHIP:
-		if (g_MissionConfig.difficulty == DIFF_SA && secs <= 437) {
+		if (g_MissionConfig.difficulty == DIFF_SA && secs <= 317) {
 			trophies_unlock(TRP_ALIEN);
 		}
 		break;
