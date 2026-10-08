@@ -1,6 +1,7 @@
 #include <vitasdk.h>
 #include <vitaGL.h>
 #include <stdio.h>
+#include <string.h>
 
 #define DEBUG
 #define TROPHY_QUEUE_SIZE 128

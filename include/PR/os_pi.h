@@ -200,7 +200,8 @@ extern s32		osPiWriteIo(u32, u32);
 extern s32		osPiReadIo(u32, u32 *);
 #ifdef __vita__
 #include <vitasdk.h>
-#define osPiStartDma(mb, prio, dir, src, dst, size, queue) sceClibMemcpy(dst, src, size)
+#define osPiStartDma(mb, prio, dir, src, dst, size, queue) \
+	sceClibMemcpy((dst), (const void *)(uintptr_t)(src), (size))
 #else
 extern s32		osPiStartDma(OSIoMesg *, s32, s32, uintptr_t, void *, u32, OSMesgQueue *);
 #endif
